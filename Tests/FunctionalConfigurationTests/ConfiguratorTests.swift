@@ -68,4 +68,27 @@ final class ConfiguratorTests: XCTestCase {
         XCTAssertEqual(actual1.value, expected.value)
         XCTAssertEqual(actual1.wrapped, expected.wrapped)
     }
+    
+    func testCustomConfigurable() {
+        struct TestConfigurable: CustomConfigurable {
+            struct Wrapped: Equatable {
+                var value = 0
+            }
+            
+            var value = false
+            var wrapped = Wrapped()
+        }
+        
+        let initial = TestConfigurable()
+        let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
+        let actual = TestConfigurable().configured { $0
+            .value(true)
+            .wrapped(.init(value: 1))
+        }
+        
+        XCTAssertNotEqual(actual.value, initial.value)
+        XCTAssertNotEqual(actual.wrapped, initial.wrapped)
+        XCTAssertEqual(actual.value, expected.value)
+        XCTAssertEqual(actual.wrapped, expected.wrapped)
+    }
 }
