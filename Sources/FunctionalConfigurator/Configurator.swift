@@ -73,7 +73,7 @@ public struct Configurator<Base> {
 extension Configurator {
     @dynamicMemberLookup
     public struct CallableBlock<Value> {
-        private var _block: NonCallableBlock<Value>
+        var _block: NonCallableBlock<Value>
         
         init(
             configurator: Configurator,

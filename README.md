@@ -44,15 +44,10 @@ class ImageViewController: UIViewController {
             .layer.cornerRadius(10)
     }
     
-    let imageView: UIImageView = .init()
+    let imageView = UIImageView(config: StyleSheet.imageView)
     
     override func loadView() {
         self.view = imageView
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        StyleSheet.imageView.configure(imageView)
     }
 }
 ```
@@ -118,7 +113,7 @@ If you use SwiftPM for your project, you can add DeclarativeConfiguration to you
 ```swift
 .package(
     url: "git@github.com:makeupstudio/swift-declarative-configuration.git", 
-    from: "0.0.1"
+    from: "0.0.2"
 )
 ```
 
