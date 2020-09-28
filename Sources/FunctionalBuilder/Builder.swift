@@ -12,8 +12,34 @@ public struct Builder<Base> {
     public func apply() where Base: AnyObject { _ = build() }
     
     @inlinable
-    public func reinforce(_ transform: @escaping (inout Base) -> Void) -> Builder {
+    public func reinforce(
+        _ transform: @escaping (inout Base) -> Void
+    ) -> Builder {
         Builder(build()).set(transform)
+    }
+    
+    @inlinable
+    public func reinforce<T0>(
+        _ t0: T0,
+        _ transform: @escaping (inout Base, T0) -> Void
+    ) -> Builder {
+        reinforce { base in transform(&base, t0) }
+    }
+    
+    @inlinable
+    public func reinforce<T0, T1>(
+        _ t0: T0, t1: T1,
+        _ transform: @escaping (inout Base, T0, T1) -> Void
+    ) -> Builder {
+        reinforce { base in transform(&base, t0, t1) }
+    }
+    
+    @inlinable
+    public func reinforce<T0, T1, T2>(
+        _ t0: T0, _ t1: T1, _ t2: T2,
+        _ transform: @escaping (inout Base, T0, T1, T2) -> Void
+    ) -> Builder {
+        reinforce { base in transform(&base, t0, t1, t2) }
     }
     
     public init(_ initialValue: @escaping @autoclosure () -> Base) {
@@ -72,6 +98,15 @@ extension Builder {
             self._block = .init(
                 builder: builder,
                 keyPath: keyPath
+            )
+        }
+        
+        public func callAsFunction(if condition: Bool, _ value: @escaping @autoclosure () -> Value) -> Builder {
+            Builder(
+                _block.builder._initialValue,
+                _block.builder._configurator.appendingConfiguration { base in
+                    _block.keyPath.embed(value(), in: base)
+                }
             )
         }
         
