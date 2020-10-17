@@ -5,8 +5,8 @@ public protocol CustomConfigurable {}
 extension CustomConfigurable {
     public typealias Config = Configurator<Self>
     
-    public func configured(using configuration: (Config.Type) -> Config) -> Self {
-        configured(using: configuration(Config.self))
+    public func configured(using configuration: (Config) -> Config) -> Self {
+        configured(using: configuration(Config()))
     }
     
     public func configured(using configurator: Config) -> Self {
@@ -15,8 +15,8 @@ extension CustomConfigurable {
 }
 
 extension CustomConfigurable where Self: AnyObject {
-    public func configure(using configuration: (Config.Type) -> Config) {
-        configure(using: configuration(Config.self))
+    public func configure(using configuration: (Config) -> Config) {
+        configure(using: configuration(Config()))
     }
     
     public func configure(using configurator: Config) {

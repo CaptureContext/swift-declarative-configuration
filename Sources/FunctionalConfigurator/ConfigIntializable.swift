@@ -11,8 +11,8 @@ extension ConfigInitializable {
     /// Instantiates a new object with specified configuration
     ///
     /// Note: Type must implement custom intializer with no parameters, even if it inherits from NSObject
-    public init(_ configuration: (Config.Type) -> Config) {
-        self.init(configuration(Config.self))
+    public init(_ configuration: (Config) -> Config) {
+        self.init(configuration(Config()))
     }
     
     /// Instantiates a new object with specified configuration
