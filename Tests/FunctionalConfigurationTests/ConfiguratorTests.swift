@@ -7,24 +7,24 @@ final class ConfiguratorTests: XCTestCase {
             struct Wrapped: Equatable {
                 var value = 0
             }
-            
+
             var value = false
             var wrapped = Wrapped()
         }
-        
-        let wrappedConfiguator = Configurator<TestConfigurable>
+
+        let wrappedConfiguator = Configurator<TestConfigurable>()
             .wrapped.value(1)
-        
-        let valueConfigurator = Configurator<TestConfigurable>
+
+        let valueConfigurator = Configurator<TestConfigurable>()
             .value(true)
-        
+
         let configurator = wrappedConfiguator
             .appending(valueConfigurator)
-        
+
         let initial = TestConfigurable()
         let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
-        let actual = configurator.configure(initial)
-        
+        let actual = configurator.configured(initial)
+
         XCTAssertNotEqual(actual, initial)
         XCTAssertEqual(actual, expected)
     }
@@ -56,7 +56,7 @@ final class ConfiguratorTests: XCTestCase {
             .wrapped(.init(value: 1))
         }
         let actual2 = TestConfigurable(
-            TestConfigurable.Config
+            config: TestConfigurable.Config
                 .value(true)
                 .wrapped(.init(value: 1))
         )
@@ -84,6 +84,32 @@ final class ConfiguratorTests: XCTestCase {
         let actual = TestConfigurable().configured { $0
             .value(true)
             .wrapped(.init(value: 1))
+        }
+        
+        XCTAssertNotEqual(actual.value, initial.value)
+        XCTAssertNotEqual(actual.wrapped, initial.wrapped)
+        XCTAssertEqual(actual.value, expected.value)
+        XCTAssertEqual(actual.wrapped, expected.wrapped)
+    }
+    
+    func testOptional() {
+        struct TestConfigurable: CustomConfigurable {
+            struct Wrapped: Equatable {
+                var value = 0
+                init(value: Int = 0) {
+                    self.value = value
+                }
+            }
+            
+            var value = false
+            var wrapped: Wrapped? = Wrapped()
+        }
+        
+        let initial = TestConfigurable()
+        let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
+        let actual = TestConfigurable().configured { $0
+            .value(true)
+            .wrapped.value(1)
         }
         
         XCTAssertNotEqual(actual.value, initial.value)

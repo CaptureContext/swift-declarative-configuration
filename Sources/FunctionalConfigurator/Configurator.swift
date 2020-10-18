@@ -4,26 +4,33 @@ import FunctionalModification
 @dynamicMemberLookup
 public struct Configurator<Base> {
     private var _configure: (Base) -> Base
-    public init() { _configure = { $0 } }
     
-    @discardableResult
-    public func configure(_ base: Base) -> Base {
-        _configure(base)
+    public init() { _configure = { $0 } }
+        
+    public init(config configuration: (Configurator) -> Configurator) {
+        self = configuration(.init())
+    }
+    
+    public func configure(_ base: inout Base) {
+        _ = _configure(base)
     }
     
     public func configure(_ base: Base) where Base: AnyObject {
         _ = _configure(base)
     }
-        
+    
+    public func configured(_ base: Base) -> Base {
+        _configure(base)
+    }
+    
     public func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
         appendingConfiguration { base in
             modification(of: _configure(base), with: transform)
         }
     }
     
-    @inlinable
     public func appending(_ configurator: Configurator) -> Configurator {
-        appendingConfiguration(configurator.configure)
+        appendingConfiguration(configurator._configure)
     }
     
     public func appendingConfiguration(_ configuration: @escaping (Base) -> Base) -> Configurator {
@@ -35,7 +42,7 @@ public struct Configurator<Base> {
     public subscript<Value>(
         dynamicMember keyPath: WritableKeyPath<Base, Value>
     ) -> CallableBlock<Value> {
-        .init(
+        CallableBlock<Value>(
             configurator: self,
             keyPath: .init(keyPath)
         )
@@ -43,29 +50,53 @@ public struct Configurator<Base> {
     
     public subscript<Value>(
         dynamicMember keyPath: KeyPath<Base, Value>
-    ) -> NonCallableBlock<Value> where Base: AnyObject {
-        .init(
+    ) -> NonCallableBlock<Value> {
+        NonCallableBlock<Value>(
             configurator: self,
             keyPath: .getonly(keyPath)
+        )
+    }
+    
+    public subscript<Wrapped, Value>(
+        dynamicMember keyPath: WritableKeyPath<Wrapped, Value>
+    ) -> CallableBlock<Value?> where Base == Optional<Wrapped> {
+        CallableBlock<Value?>(
+            configurator: self,
+            keyPath: FunctionalKeyPath(keyPath).optional()
+        )
+    }
+    
+    public subscript<Wrapped, Value>(
+        dynamicMember keyPath: KeyPath<Wrapped, Value>
+    ) -> NonCallableBlock<Value?> where Base == Optional<Wrapped> {
+        NonCallableBlock<Value?>(
+            configurator: self,
+            keyPath: FunctionalKeyPath.getonly(keyPath).optional()
         )
     }
     
     public static subscript<Value>(
         dynamicMember keyPath: WritableKeyPath<Base, Value>
     ) -> CallableBlock<Value> {
-        .init(
-            configurator: .init(),
-            keyPath: .init(keyPath)
-        )
+        Configurator()[dynamicMember: keyPath]
     }
     
     public static subscript<Value>(
         dynamicMember keyPath: KeyPath<Base, Value>
-    ) -> NonCallableBlock<Value> where Base: AnyObject, Value: AnyObject {
-        .init(
-            configurator: .init(),
-            keyPath: .getonly(keyPath)
-        )
+    ) -> NonCallableBlock<Value> {
+        Configurator()[dynamicMember: keyPath]
+    }
+    
+    public static subscript<Wrapped, Value>(
+        dynamicMember keyPath: WritableKeyPath<Wrapped, Value>
+    ) -> CallableBlock<Value?> where Base == Optional<Wrapped> {
+        Configurator()[dynamicMember: keyPath]
+    }
+    
+    public static subscript<Wrapped, Value>(
+        dynamicMember keyPath: KeyPath<Wrapped, Value>
+    ) -> NonCallableBlock<Value?> where Base == Optional<Wrapped> {
+        Configurator()[dynamicMember: keyPath]
     }
     
 }
@@ -92,15 +123,30 @@ extension Configurator {
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> {
-            .init(
+            CallableBlock<LocalValue>(
                 configurator: _block.configurator,
-                keyPath: _block.keyPath.appending(path: .init(keyPath))
+                keyPath: _block.keyPath.appending(path: FunctionalKeyPath(keyPath))
             )
         }
         
         public subscript<LocalValue>(
             dynamicMember keyPath: KeyPath<Value, LocalValue>
-        ) -> NonCallableBlock<LocalValue> where Value: AnyObject, LocalValue: AnyObject {
+        ) -> NonCallableBlock<LocalValue> {
+            _block[dynamicMember: keyPath]
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
+        ) -> CallableBlock<LocalValue?> where Value == Optional<Wrapped> {
+            CallableBlock<LocalValue?>(
+                configurator: _block.configurator,
+                keyPath: _block.keyPath.appending(path: FunctionalKeyPath(keyPath).optional())
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
+        ) -> NonCallableBlock<LocalValue?> where Value == Optional<Wrapped> {
             _block[dynamicMember: keyPath]
         }
     }
@@ -115,14 +161,32 @@ extension Configurator {
         ) -> CallableBlock<LocalValue> where Value: AnyObject {
             .init(
                 configurator: self.configurator,
-                keyPath: self.keyPath.appending(path: .init(keyPath))
+                keyPath: self.keyPath.appending(path: FunctionalKeyPath(keyPath))
             )
         }
         
         public subscript<LocalValue>(
             dynamicMember keyPath: KeyPath<Value, LocalValue>
-        ) -> NonCallableBlock<LocalValue> where Value: AnyObject, LocalValue: AnyObject {
+        ) -> NonCallableBlock<LocalValue> {
             .init(
+                configurator: self.configurator,
+                keyPath: self.keyPath.appending(path: .getonly(keyPath))
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
+        ) -> CallableBlock<LocalValue?> where Wrapped: AnyObject, Value == Optional<Wrapped> {
+            CallableBlock<LocalValue?>(
+                configurator: self.configurator,
+                keyPath: self.keyPath.appending(path: FunctionalKeyPath(keyPath))
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
+        ) -> NonCallableBlock<LocalValue?> where Value == Optional<Wrapped> {
+            NonCallableBlock<LocalValue?>(
                 configurator: self.configurator,
                 keyPath: self.keyPath.appending(path: .getonly(keyPath))
             )

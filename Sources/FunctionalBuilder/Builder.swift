@@ -6,7 +6,7 @@ public struct Builder<Base> {
     private var _initialValue: () -> Base
     private var _configurator: Configurator<Base>
     
-    public func build() -> Base { _configurator.configure(_initialValue()) }
+    public func build() -> Base { _configurator.configured(_initialValue()) }
     
     @inlinable
     public func apply() where Base: AnyObject { _ = build() }
@@ -69,18 +69,36 @@ public struct Builder<Base> {
     public subscript<Value>(
         dynamicMember keyPath: WritableKeyPath<Base, Value>
     ) -> CallableBlock<Value> {
-        .init(
+        CallableBlock<Value>(
             builder: self,
-            keyPath: .init(keyPath)
+            keyPath: FunctionalKeyPath(keyPath)
         )
     }
     
     public subscript<Value>(
         dynamicMember keyPath: KeyPath<Base, Value>
-    ) -> NonCallableBlock<Value> where Base: AnyObject, Value: AnyObject {
-        .init(
+    ) -> NonCallableBlock<Value> {
+        NonCallableBlock<Value>(
             builder: self,
             keyPath: .getonly(keyPath)
+        )
+    }
+    
+    public subscript<Wrapped, Value>(
+        dynamicMember keyPath: WritableKeyPath<Wrapped, Value>
+    ) -> CallableBlock<Value?> where Base == Optional<Wrapped> {
+        CallableBlock<Value?>(
+            builder: self,
+            keyPath: FunctionalKeyPath(keyPath).optional()
+        )
+    }
+    
+    public subscript<Wrapped, Value>(
+        dynamicMember keyPath: KeyPath<Wrapped, Value>
+    ) -> NonCallableBlock<Value?> where Base == Optional<Wrapped> {
+        NonCallableBlock<Value?>(
+            builder: self,
+            keyPath: FunctionalKeyPath.getonly(keyPath).optional()
         )
     }
     
@@ -122,7 +140,7 @@ extension Builder {
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> {
-            .init(
+            CallableBlock<LocalValue>(
                 builder: _block.builder,
                 keyPath: _block.keyPath.appending(path: .init(keyPath))
             )
@@ -130,8 +148,30 @@ extension Builder {
         
         public subscript<LocalValue>(
             dynamicMember keyPath: KeyPath<Value, LocalValue>
-        ) -> NonCallableBlock<LocalValue> where Value: AnyObject, LocalValue: AnyObject {
+        ) -> NonCallableBlock<LocalValue> {
             _block[dynamicMember: keyPath]
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
+        ) -> CallableBlock<LocalValue?> where Value == Optional<Wrapped> {
+            CallableBlock<LocalValue?>(
+                builder: _block.builder,
+                keyPath: _block.keyPath.appending(
+                    path: FunctionalKeyPath(keyPath).optional()
+                )
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
+        ) -> NonCallableBlock<LocalValue?> where Value == Optional<Wrapped> {
+            NonCallableBlock<LocalValue?>(
+                builder: _block.builder,
+                keyPath: _block.keyPath.appending(
+                    path: FunctionalKeyPath.getonly(keyPath).optional()
+                )
+            )
         }
     }
     
@@ -143,7 +183,7 @@ extension Builder {
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> where Value: AnyObject {
-            .init(
+            CallableBlock<LocalValue>(
                 builder: self.builder,
                 keyPath: self.keyPath.appending(path: .init(keyPath))
             )
@@ -151,10 +191,32 @@ extension Builder {
         
         public subscript<LocalValue>(
             dynamicMember keyPath: KeyPath<Value, LocalValue>
-        ) -> NonCallableBlock<LocalValue> where Value: AnyObject, LocalValue: AnyObject {
-            .init(
+        ) -> NonCallableBlock<LocalValue> {
+            NonCallableBlock<LocalValue>(
                 builder: self.builder,
                 keyPath: self.keyPath.appending(path: .getonly(keyPath))
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
+        ) -> CallableBlock<LocalValue?> where Wrapped: AnyObject, Value == Optional<Wrapped> {
+            CallableBlock<LocalValue?>(
+                builder: self.builder,
+                keyPath: self.keyPath.appending(
+                    path: FunctionalKeyPath(keyPath).optional()
+                )
+            )
+        }
+        
+        public subscript<Wrapped, LocalValue>(
+            dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
+        ) -> NonCallableBlock<LocalValue?> where Value == Optional<Wrapped> {
+            NonCallableBlock<LocalValue?>(
+                builder: self.builder,
+                keyPath: self.keyPath.appending(
+                    path: FunctionalKeyPath.getonly(keyPath).optional()
+                )
             )
         }
     }

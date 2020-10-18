@@ -10,7 +10,7 @@ extension CustomConfigurable {
     }
     
     public func configured(using configurator: Config) -> Self {
-        configurator.configure(self)
+        configurator.configured(self)
     }
 }
 
