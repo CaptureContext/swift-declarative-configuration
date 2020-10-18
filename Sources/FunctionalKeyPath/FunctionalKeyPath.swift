@@ -8,7 +8,7 @@ public struct FunctionalKeyPath<Root, Value> {
     private let _embed: (Value, Root) -> Root
     private let _extract: (Root) -> Value
     
-    /// Creates a case path with a pair of functions.
+    /// Creates a functional keyPath with a pair of functions.
     ///
     /// - Parameters:
     ///   - embed: A function that always succeeds in embedding a value in a root.
@@ -18,7 +18,7 @@ public struct FunctionalKeyPath<Root, Value> {
         self._extract = extract
     }
     
-    /// Creates a case path with a writableKeyPath
+    /// Creates a functional keyPath with a writableKeyPath
     @inlinable
     public init(_ keyPath: WritableKeyPath<Root, Value>) {
         self.init(
@@ -32,7 +32,15 @@ public struct FunctionalKeyPath<Root, Value> {
         )
     }
     
-    /// Creates a case path with a keyPath
+    /// Creates a functional keyPath with a writableKeyPath
+    @inlinable
+    public static func optional(
+        _ keyPath: WritableKeyPath<Root, Value>
+    ) -> FunctionalKeyPath<Root?, Value?> {
+        FunctionalKeyPath(keyPath).optional()
+    }
+    
+    /// Creates a functional keyPath with a keyPath
     ///
     /// Ignores embed function call
     @inlinable
@@ -82,12 +90,12 @@ public struct FunctionalKeyPath<Root, Value> {
         self._extract(root)
     }
     
-    /// Returns a new case path created by appending the given case path to this one.
+    /// Returns a new functional keyPath created by appending the given functional keyPath to this one.
     ///
-    /// Use this method to extend this case path to the value type of another case path.
+    /// Use this method to extend this functional keyPath to the value type of another functional keyPath.
     ///
-    /// - Parameter path: The case path to append.
-    /// - Returns: A case path from the root of this case path to the value type of `path`.
+    /// - Parameter path: The functional keyPath to append.
+    /// - Returns: A functional keyPath from the root of this functional keyPath to the value type of `path`.
     @inlinable
     public func appending<AppendedValue>(path: FunctionalKeyPath<Value, AppendedValue>) -> FunctionalKeyPath<Root, AppendedValue> {
         FunctionalKeyPath<Root, AppendedValue>(
@@ -108,12 +116,12 @@ public struct FunctionalKeyPath<Root, Value> {
         )
     }
     
-    /// Returns a new case path created by appending the given case path to this one.
+    /// Returns a new functional keyPath created by appending the given functional keyPath to this one.
     ///
-    /// Use this method to extend this case path to the value type of another case path.
+    /// Use this method to extend this functional keyPath to the value type of another functional keyPath.
     ///
-    /// - Parameter path: The case path to append.
-    /// - Returns: A case path from the root of this case path to the value type of `path`.
+    /// - Parameter path: The functional keyPath to append.
+    /// - Returns: A functional keyPath from the root of this functional keyPath to the value type of `path`.
     @inlinable
     public func appending<Wrapped, AppendedValue>(
         path: FunctionalKeyPath<Wrapped, AppendedValue>
