@@ -1,6 +1,6 @@
 import XCTest
 @testable import FunctionalConfigurator
-import UIKit
+
 final class ConfiguratorTests: XCTestCase {
     func testConfiguration() {
         struct TestConfigurable: Equatable {
