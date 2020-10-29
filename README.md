@@ -131,6 +131,10 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 
 >  README PLACEHOLDER (Not yet written 😅)
 
+#### FunctionalHandler
+
+>  README PLACEHOLDER (Not yet written 😅)
+
 ## Installation
 
 ### Basic

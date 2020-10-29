@@ -35,6 +35,7 @@ let package = Package(
             dependencies: [
                 .target(name: "FunctionalBuilder"),
                 .target(name: "FunctionalConfigurator"),
+                .target(name: "FunctionalHandler"),
                 .target(name: "FunctionalKeyPath"),
                 .target(name: "FunctionalModification"),
                 .product(name: "CasePaths", package: "swift-case-paths")
@@ -55,12 +56,13 @@ let package = Package(
                 .target(name: "FunctionalModification")
             ]
         ),
+        .target(name: "FunctionalHandler"),
         .target(name: "FunctionalKeyPath"),
         .target(name: "FunctionalModification"),
         .testTarget(
-            name: "FunctionalConfigurationTests",
+            name: "DeclarativeConfigurationTests",
             dependencies: [
-                .target(name: "FunctionalBuilder")
+                .target(name: "DeclarativeConfiguration")
             ]
         ),
     ]

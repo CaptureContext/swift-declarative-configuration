@@ -1,6 +1,6 @@
 import XCTest
 @testable import FunctionalConfigurator
-
+import UIKit
 final class ConfiguratorTests: XCTestCase {
     func testConfiguration() {
         struct TestConfigurable: Equatable {
@@ -94,27 +94,31 @@ final class ConfiguratorTests: XCTestCase {
     
     func testOptional() {
         struct TestConfigurable: CustomConfigurable {
-            struct Wrapped: Equatable {
-                var value = 0
-                init(value: Int = 0) {
-                    self.value = value
-                }
+            internal init(value: Bool = false, wrappedValue: Int = 0) {
+                self.value = value
+                self.wrapped?.value = wrappedValue
+            }
+            
+            class Wrapped: NSObject {
+                var value: Int? = 0
+                override init() { self.value = 0 }
             }
             
             var value = false
-            var wrapped: Wrapped? = Wrapped()
+            let _wrapped: Wrapped = Wrapped()
+            var wrapped: Wrapped? { _wrapped }
         }
         
         let initial = TestConfigurable()
-        let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
+        let expected = TestConfigurable(value: true, wrappedValue: 1)
         let actual = TestConfigurable().configured { $0
             .value(true)
             .wrapped.value(1)
         }
         
         XCTAssertNotEqual(actual.value, initial.value)
-        XCTAssertNotEqual(actual.wrapped, initial.wrapped)
+        XCTAssertNotEqual(actual.wrapped?.value, initial.wrapped?.value)
         XCTAssertEqual(actual.value, expected.value)
-        XCTAssertEqual(actual.wrapped, expected.wrapped)
+        XCTAssertEqual(actual._wrapped.value, expected._wrapped.value)
     }
 }
