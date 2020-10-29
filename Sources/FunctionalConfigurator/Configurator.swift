@@ -5,34 +5,49 @@ import FunctionalModification
 public struct Configurator<Base> {
     private var _configure: (Base) -> Base
     
+    /// Creates a new instance of configurator
+    ///
+    /// Newly created configurator has no modification set up.
+    /// So it's `configure` function does not modify input
     public init() { _configure = { $0 } }
-        
+    
+    /// Creates a configurator with a configuration function
+    ///
+    /// Initial value passed to configuration function is an empty configurator
     public init(config configuration: (Configurator) -> Configurator) {
         self = configuration(.init())
     }
     
+    /// Modifies an object with specified configuration
     public func configure(_ base: inout Base) {
         _ = _configure(base)
     }
     
+    /// Modifies a reference-type object with specified configuration
     public func configure(_ base: Base) where Base: AnyObject {
         _ = _configure(base)
     }
     
+    /// Modifies returns modified object
+    ///
+    /// Note: for reference types it is usually the same object
     public func configured(_ base: Base) -> Base {
         _configure(base)
     }
     
+    /// Appends modification of stored object to stored configuration
     public func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
         appendingConfiguration { base in
             modification(of: _configure(base), with: transform)
         }
     }
     
+    /// Appends modification of a new configurator to stored configuration
     public func appending(_ configurator: Configurator) -> Configurator {
         appendingConfiguration(configurator._configure)
     }
     
+    /// Appends configuration to stored configuration
     public func appendingConfiguration(_ configuration: @escaping (Base) -> Base) -> Configurator {
         modification(of: self) { _self in
             _self._configure = { configuration(_configure($0)) }
@@ -97,6 +112,10 @@ public struct Configurator<Base> {
         dynamicMember keyPath: KeyPath<Wrapped, Value>
     ) -> NonCallableBlock<Value?> where Base == Optional<Wrapped> {
         Configurator()[dynamicMember: keyPath]
+    }
+    
+    public static func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
+        Configurator().set(transform)
     }
     
 }

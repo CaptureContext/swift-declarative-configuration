@@ -45,7 +45,7 @@ public struct FunctionalKeyPath<Root, Value> {
     /// Ignores embed function call
     @inlinable
     public static func getonly(_ keyPath: KeyPath<Root, Value>) -> FunctionalKeyPath {
-        .init(embed: { value, root in
+        FunctionalKeyPath(embed: { value, root in
             return root
         }, extract: { root in
             root[keyPath: keyPath]

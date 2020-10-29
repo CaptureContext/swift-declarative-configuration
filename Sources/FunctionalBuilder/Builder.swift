@@ -11,6 +11,7 @@ public struct Builder<Base> {
     @inlinable
     public func apply() where Base: AnyObject { _ = build() }
     
+    /// Applies modification to a new builder, created with a built object.
     @inlinable
     public func reinforce(
         _ transform: @escaping (inout Base) -> Void
@@ -18,6 +19,7 @@ public struct Builder<Base> {
         Builder(build()).set(transform)
     }
     
+    /// Applies modification to a new builder, created with a built object, also passes leading parameters to transform function.
     @inlinable
     public func reinforce<T0>(
         _ t0: T0,
@@ -26,6 +28,7 @@ public struct Builder<Base> {
         reinforce { base in transform(&base, t0) }
     }
     
+    /// Applies modification to a new builder, created with a built object, also passes leading parameters to transform function.
     @inlinable
     public func reinforce<T0, T1>(
         _ t0: T0, t1: T1,
@@ -34,6 +37,7 @@ public struct Builder<Base> {
         reinforce { base in transform(&base, t0, t1) }
     }
     
+    /// Applies modification to a new builder, created with a built object, also passes leading parameters to transform function.
     @inlinable
     public func reinforce<T0, T1, T2>(
         _ t0: T0, _ t1: T1, _ t2: T2,
@@ -42,6 +46,7 @@ public struct Builder<Base> {
         reinforce { base in transform(&base, t0, t1, t2) }
     }
     
+    /// Creates a new instance of builder with initial value
     public init(_ initialValue: @escaping @autoclosure () -> Base) {
         self.init(
             initialValue,
@@ -56,7 +61,8 @@ public struct Builder<Base> {
         _initialValue = initialValue
         _configurator = configurator
     }
-        
+    
+    /// Appends transformation to current configuration
     public func set(
         _ transform: @escaping (inout Base) -> Void
     ) -> Builder {
