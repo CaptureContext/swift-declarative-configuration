@@ -53,7 +53,7 @@ public struct FunctionalHandler<Input, Output> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(map transform: @escaping (Output) -> Output) {
+        public mutating func map(_ transform: @escaping (Output) -> Output) {
             guard let action = self.action else { return }
             self.action = { input in transform(action(input)) }
         }

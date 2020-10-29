@@ -18,6 +18,10 @@ let package = Package(
             targets: ["FunctionalConfigurator"]
         ),
         .library(
+            name: "FunctionalHandler",
+            targets: ["FunctionalHandler"]
+        ),
+        .library(
             name: "FunctionalKeyPath",
             targets: ["FunctionalKeyPath"]
         ),
