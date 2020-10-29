@@ -150,10 +150,7 @@ You can add DeclarativeConfiguration to an Xcode project by adding it as a packa
 If you use SwiftPM for your project, you can add DeclarativeConfiguration to your package file. Also my advice will be to use SSH.
 
 ```swift
-.package(
-    url: "git@github.com:makeupstudio/swift-declarative-configuration.git", 
-    from: "0.0.4"
-)
+.package(url: "git@github.com:makeupstudio/swift-declarative-configuration.git", .branch("main"))
 ```
 
 Do not forget about target dependencies:
