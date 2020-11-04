@@ -1,13 +1,13 @@
 import XCTest
-@testable import FunctionalHandler
+@testable import FunctionalClosures
 
-final class FunctionalHandlerTests: XCTestCase {
+final class FunctionalClosuresTests: XCTestCase {
     func testHandler() {
         class Object {
-            @FunctionalHandler<(Int, Int), Int>
+            @FunctionalDataSource<(Int, Int), Int>
             var sum = .init { $0 + $1 } // You can specify default handler
             
-            @FunctionalHandler<Int, Void>
+            @FunctionalHandler<Int>
             var handleSumResult // or leave it nil
             
             func sum(_ a: Int, _ b: Int) -> Int? {

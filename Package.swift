@@ -18,8 +18,8 @@ let package = Package(
             targets: ["FunctionalConfigurator"]
         ),
         .library(
-            name: "FunctionalHandler",
-            targets: ["FunctionalHandler"]
+            name: "FunctionalClosures",
+            targets: ["FunctionalClosures"]
         ),
         .library(
             name: "FunctionalKeyPath",
@@ -39,7 +39,7 @@ let package = Package(
             dependencies: [
                 .target(name: "FunctionalBuilder"),
                 .target(name: "FunctionalConfigurator"),
-                .target(name: "FunctionalHandler"),
+                .target(name: "FunctionalClosures"),
                 .target(name: "FunctionalKeyPath"),
                 .target(name: "FunctionalModification"),
                 .product(name: "CasePaths", package: "swift-case-paths")
@@ -60,7 +60,7 @@ let package = Package(
                 .target(name: "FunctionalModification")
             ]
         ),
-        .target(name: "FunctionalHandler"),
+        .target(name: "FunctionalClosures"),
         .target(name: "FunctionalKeyPath"),
         .target(name: "FunctionalModification"),
         .testTarget(

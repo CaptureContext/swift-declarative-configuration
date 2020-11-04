@@ -1,28 +1,28 @@
 /// A wrapper for clusure-based interaction between objects
 ///
-/// Provides a public API to set internal handlers (closure-based delegates & datasources)
+/// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct FunctionalHandler<Input, Output> {
+public struct FunctionalHandler<Input> {
     public struct Container {
-        internal var action: ((Input) -> Output)?
+        internal var action: ((Input) -> Void)?
         
         internal init() {}
         
-        public init(handler: ((Input) -> Output)?) {
+        public init(handler: ((Input) -> Void)?) {
             self.action = handler
         }
         
-        public mutating func callAsFunction(action: ((Input) -> Output)?) {
+        public mutating func callAsFunction(action: ((Input) -> Void)?) {
             self.action = action
         }
         
         @available(*, deprecated, message: """
         This API is not stable yet and may change (or may not), \
-        consider using redeclaration with `(Input) -> Output` signature fucntion. \
+        consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((Input) -> Output)?) where Output == Void {
+        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((Input) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action
@@ -46,17 +46,6 @@ public struct FunctionalHandler<Input, Output> {
             case preceding
             case appending
         }
-        
-        @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
-        consider using redeclaration with `(Input) -> Output` signature fucntion. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """)
-        public mutating func map(_ transform: @escaping (Output) -> Output) {
-            guard let action = self.action else { return }
-            self.action = { input in transform(action(input)) }
-        }
     }
     
     public init() {}
@@ -67,5 +56,5 @@ public struct FunctionalHandler<Input, Output> {
     
     public var wrappedValue: Container = .init()
     
-    public var projectedValue: ((Input) -> Output)? { wrappedValue.action }
+    public var projectedValue: ((Input) -> Void)? { wrappedValue.action }
 }
