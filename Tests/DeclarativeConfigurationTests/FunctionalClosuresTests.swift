@@ -13,7 +13,7 @@ final class FunctionalClosuresTests: XCTestCase {
             func sum(_ a: Int, _ b: Int) -> Int? {
                 let result = $sum?((a, b)) 
                 if let result = result {
-                    $handleSumResult?(result)
+                    _handleSumResult(result)
                 }
                 return result
             }
@@ -32,6 +32,9 @@ final class FunctionalClosuresTests: XCTestCase {
         XCTAssertEqual(object.sum(a, b), c)
         
         object.handleSumResult(action: nil)
+        // object._handleSumResult(0) // private
+        
+        XCTAssertEqual(object.$sum!((1,1)), 2)
         
         XCTAssertEqual(object.sum(a, b), c)
         
