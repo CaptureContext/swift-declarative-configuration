@@ -26,13 +26,17 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
   Functional builder for anything, enables you to modify object instances in a declarative way. Also contains `BuilderProvider` protocol with a computed `builder` property and implements that protocol on `NSObject` type.
 
+- **[FunctionalClosures](./Sources/FunctionalClosures)**
+
+  Functional closures allow you to setup functional handlers & datasources, the API may seem a bit strange at the first look, so feel free to ask or discuss anything [here](https://github.com/MakeupStudio/swift-declarative-configuration/issues/1).
+
 - **[DeclarativeConfiguration](./Sources/DeclarativeConfiguration)**
 
   Wraps and exports all the products.
 
 ## Basic Usage
 
-### UIKit & No SDC
+### No SDC
 
 ```swift
 class ImageViewController: UIViewController {
@@ -52,7 +56,7 @@ class ImageViewController: UIViewController {
 }
 ```
 
-### UIKit & FunctionalConfigurator
+### FunctionalConfigurator
 
 ```swift
 import FunctionalConfigurator
@@ -75,7 +79,7 @@ class ImageViewController: UIViewController {
 
 **Note:** This way is **recommended**, but remember, that custom types **MUST** implement initializer with no parameters even if the superclass already has it or you will get a crash otherwise.
 
-### UIKit & FunctionalBuilder
+### FunctionalBuilder
 
 ```swift
 import FunctionalBuilder
@@ -96,7 +100,97 @@ class ImageViewController: UIViewController {
 
 Note: This way is recommended too, and it is more **safe**, because it modifies existing objects.
 
-### Other usecases
+### FunctionalHandler
+
+### No SDC
+
+**Declaration**
+
+```swift
+public class TapGestureRecognizer: UITapGestureRecognizer {
+    var onTapGesture: ((TapGestureRecognizer) -> Void)?
+    
+    init() {
+        super.init(target: nil, action: nil)
+        commonInit()
+    }
+    
+    override public init(target: Any?, action: Selector?) {
+        super.init(target: target, action: action)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        self.addTarget(self, action: #selector(handleTap))
+    }
+    
+    @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
+        onTapGesture?(recognizer)
+    }
+}
+```
+
+**Usage**
+
+```swift
+let tapRecognizer = TapGestureRecognizer()
+
+// handler setup
+tapRecognizer.onTapGesture = { recognizer in
+	// ...
+}
+
+// call from the outside
+tapRecognizer.onTapGesture?(tapRecognizer)
+```
+
+### With SDC
+
+**Declaration**
+
+```swift
+public class TapGestureRecognizer: UITapGestureRecognizer {
+    @FunctionalHandler<TapGestureRecognizer>
+    var onTapGesture
+    
+    init() {
+        super.init(target: nil, action: nil)
+        commonInit()
+    }
+    
+    override public init(target: Any?, action: Selector?) {
+        super.init(target: target, action: action)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        self.addTarget(self, action: #selector(handleTap))
+    }
+    
+    @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
+        _onTapGesture(recognizer)
+    }
+}
+```
+
+**Usage**
+
+```swift
+let tapRecognizer = TapGestureRecognizer()
+
+// handler setup now called as function
+tapRecognizer.onTapGesture { recognizer in
+	// ...
+}
+
+// call from the outside now uses propertyWrapper projectedValue API, which is not as straitforward
+// and it is nice, because:
+// - handlers usually should not be called from the outside
+// - you do not lose the ability to call it, but an API tells you that it's kinda private
+tapRecognizer.$onTapGesture?(tapRecognizer)
+```
+
+### More
 
 #### Builder
 
@@ -129,11 +223,11 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 
 #### Configurator
 
->  README PLACEHOLDER (Not yet written 😅)
+> **Note:** Your NSObject classes **must** implement `init()` to use Configurators. It's a little trade-off for the convenience it brings to your codebase, see [tests](./Tests/DeclarativeConfigurationTests/ConfiguratorTests.swift) for an example.
 
-#### FunctionalHandler
+#### FunctionalDataSource
 
->  README PLACEHOLDER (Not yet written 😅)
+`FunctionalDataSource` type is very similar to the `FunctionalHandler`, but if `FunctionalHandler<Input>` is kinda `FunctionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
 
 ## Installation
 
