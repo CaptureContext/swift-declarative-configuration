@@ -1,5 +1,6 @@
 import FunctionalConfigurator
 import FunctionalKeyPath
+import FunctionalModification
 
 @dynamicMemberLookup
 public struct Builder<Base> {
@@ -129,7 +130,11 @@ extension Builder {
             Builder(
                 _block.builder._initialValue,
                 _block.builder._configurator.appendingConfiguration { base in
-                    _block.keyPath.embed(value(), in: base)
+                    if condition {
+                        return _block.keyPath.embed(value(), in: base)
+                    } else {
+                        return base
+                    }
                 }
             )
         }
@@ -139,6 +144,18 @@ extension Builder {
                 _block.builder._initialValue,
                 _block.builder._configurator.appendingConfiguration { base in
                     _block.keyPath.embed(value(), in: base)
+                }
+            )
+        }
+        
+        public func set(_ transform: @escaping (inout Value) -> Void) -> Builder {
+            Builder(
+                _block.builder._initialValue,
+                _block.builder._configurator.appendingConfiguration { base in
+                    _block.keyPath.embed(
+                        modification(of: _block.keyPath.extract(from: base), with: transform),
+                        in: base
+                    )
                 }
             )
         }
