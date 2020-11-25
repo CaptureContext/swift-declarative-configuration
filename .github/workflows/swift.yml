@@ -11,9 +11,9 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: fwal/setup-swift@v1
+    - uses: Didstopia/SwiftAction@v1.0.3
       with:
-        swift-version: "5.3"
+        swift-action: 'build'
     
     - uses: actions/checkout@v2
       
