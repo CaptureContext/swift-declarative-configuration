@@ -190,6 +190,16 @@ tapRecognizer.onTapGesture { recognizer in
 tapRecognizer.$onTapGesture?(tapRecognizer)
 ```
 
+Also you can create such an instance with `Configurator`:
+
+```swift
+let tapRecognizer = TapGestureRecognizer { $0 
+    .$onTapGesture { recognizer in 
+        // ...
+    }
+}
+```
+
 ### More
 
 #### Builder
