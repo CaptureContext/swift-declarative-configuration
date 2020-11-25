@@ -56,7 +56,10 @@ public struct FunctionalHandler<Input> {
     
     public var wrappedValue: Container = .init()
     
-    public var projectedValue: ((Input) -> Void)? { wrappedValue.action }
+    public var projectedValue: ((Input) -> Void)? {
+        get { wrappedValue.action }
+        set { wrappedValue.action = newValue }
+    }
     
     public func callAsFunction(_ input: Input) {
         projectedValue?(input)

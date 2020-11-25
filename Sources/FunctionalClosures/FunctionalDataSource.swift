@@ -25,7 +25,10 @@ public struct FunctionalDataSource<Input, Output> {
     
     public var wrappedValue: Container = .init()
     
-    public var projectedValue: ((Input) -> Output)? { wrappedValue.action }
+    public var projectedValue: ((Input) -> Output)? {
+        get { wrappedValue.action }
+        set { wrappedValue.action = newValue }
+    }
     
     public func callAsFunction(_ input: Input) -> Output? {
         projectedValue?(input)
