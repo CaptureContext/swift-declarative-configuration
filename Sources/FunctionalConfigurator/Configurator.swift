@@ -139,6 +139,15 @@ extension Configurator {
             _block.configurator.appendingConfiguration { _block.keyPath.embed(value, in: $0) }
         }
         
+        public func set(_ transform: @escaping (inout Value) -> Void) -> Configurator {
+            _block.configurator.appendingConfiguration { base in
+                _block.keyPath.embed(
+                    modification(of: _block.keyPath.extract(from: base), with: transform),
+                    in: base
+                )
+            }
+        }
+        
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> {
