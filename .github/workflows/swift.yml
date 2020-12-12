@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: Didstopia/SwiftAction@v1.0.3
+    - uses: Didstopia/SwiftAction@master
       with:
         swift-action: 'build'
     
