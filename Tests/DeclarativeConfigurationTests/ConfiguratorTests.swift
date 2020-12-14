@@ -31,7 +31,7 @@ final class ConfiguratorTests: XCTestCase {
     
     
     func testConfigInitializable() {
-        class TestConfigurable: NSObject {
+        final class TestConfigurable: NSObject {
             override init() { // required init
                 super.init()
             }
