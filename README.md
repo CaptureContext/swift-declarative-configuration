@@ -36,6 +36,8 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
 ## Basic Usage
 
+> See tests for more
+
 ### No SDC
 
 ```swift

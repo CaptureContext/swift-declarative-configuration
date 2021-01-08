@@ -2,7 +2,7 @@
 ///
 /// Provides a public API to set internal closure-based datasource with a functional API
 @propertyWrapper
-public struct FunctionalDataSource<Input, Output> {
+public struct DataSource<Input, Output> {
     public struct Container {
         internal var action: ((Input) -> Output)?
         
