@@ -6,8 +6,8 @@ public class DataSource<Input, Output> {
     public struct Container {
         internal var action: ((Input) -> Output)
         
-        public init(handler: @escaping (Input) -> Output) {
-            self.action = handler
+        public init(action: @escaping (Input) -> Output) {
+            self.action = action
         }
         
         public mutating func callAsFunction(perform action: @escaping (Input) -> Output) {
@@ -42,8 +42,8 @@ public class OptionalDataSource<Input, Output> {
         
         internal init() {}
         
-        public init(handler: ((Input) -> Output)?) {
-            self.action = handler
+        public init(action: ((Input) -> Output)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(perform action: ((Input) -> Output)?) {

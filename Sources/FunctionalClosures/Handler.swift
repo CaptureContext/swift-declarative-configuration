@@ -9,8 +9,8 @@ public class Handler<Input> {
         
         internal init() {}
         
-        public init(handler: ((Input) -> Void)?) {
-            self.action = handler
+        public init(action: ((Input) -> Void)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(action: ((Input) -> Void)?) {
@@ -79,8 +79,8 @@ public class Handler2<T0, T1> {
         
         internal init() {}
         
-        public init(handler: ((T0, T1) -> Void)?) {
-            self.action = handler
+        public init(action: ((T0, T1) -> Void)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(action: ((T0, T1) -> Void)?) {
@@ -147,8 +147,8 @@ public class Handler3<T0, T1, T2> {
         
         internal init() {}
         
-        public init(handler: ((T0, T1, T2) -> Void)?) {
-            self.action = handler
+        public init(action: ((T0, T1, T2) -> Void)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(action: ((T0, T1, T2) -> Void)?) {
@@ -215,8 +215,8 @@ public class Handler4<T0, T1, T2, T3> {
         
         internal init() {}
         
-        public init(handler: ((T0, T1, T2, T3) -> Void)?) {
-            self.action = handler
+        public init(action: ((T0, T1, T2, T3) -> Void)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(action: ((T0, T1, T2, T3) -> Void)?) {
@@ -283,8 +283,8 @@ public class Handler5<T0, T1, T2, T3, T4> {
         
         internal init() {}
         
-        public init(handler: ((T0, T1, T2, T3, T4) -> Void)?) {
-            self.action = handler
+        public init(action: ((T0, T1, T2, T3, T4) -> Void)?) {
+            self.action = action
         }
         
         public mutating func callAsFunction(action: ((T0, T1, T2, T3, T4) -> Void)?) {
