@@ -3,7 +3,7 @@
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct Handler<Input> {
+public class Handler<Input> {
     public struct Container {
         internal var action: ((Input) -> Void)?
         
@@ -23,7 +23,7 @@ public struct Handler<Input> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((Input) -> Void)?) {
+        public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((Input) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action
@@ -73,7 +73,7 @@ public struct Handler<Input> {
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct Handler2<T0, T1> {
+public class Handler2<T0, T1> {
     public struct Container {
         internal var action: ((T0, T1) -> Void)?
         
@@ -93,7 +93,7 @@ public struct Handler2<T0, T1> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((T0, T1) -> Void)?) {
+        public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action
@@ -141,7 +141,7 @@ public struct Handler2<T0, T1> {
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct Handler3<T0, T1, T2> {
+public class Handler3<T0, T1, T2> {
     public struct Container {
         internal var action: ((T0, T1, T2) -> Void)?
         
@@ -161,7 +161,7 @@ public struct Handler3<T0, T1, T2> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((T0, T1, T2) -> Void)?) {
+        public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1, T2) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action
@@ -209,7 +209,7 @@ public struct Handler3<T0, T1, T2> {
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct Handler4<T0, T1, T2, T3> {
+public class Handler4<T0, T1, T2, T3> {
     public struct Container {
         internal var action: ((T0, T1, T2, T3) -> Void)?
         
@@ -229,7 +229,7 @@ public struct Handler4<T0, T1, T2, T3> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((T0, T1, T2, T3) -> Void)?) {
+        public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1, T2, T3) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action
@@ -277,7 +277,7 @@ public struct Handler4<T0, T1, T2, T3> {
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public struct Handler5<T0, T1, T2, T3, T4> {
+public class Handler5<T0, T1, T2, T3, T4> {
     public struct Container {
         internal var action: ((T0, T1, T2, T3, T4) -> Void)?
         
@@ -297,7 +297,7 @@ public struct Handler5<T0, T1, T2, T3, T4> {
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """)
-        public mutating func callAsFunction(_ behaviour: Behaviour, action: ((T0, T1, T2, T3, T4) -> Void)?) {
+        public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1, T2, T3, T4) -> Void)?) {
             switch behaviour {
             case .resetting:
                 self.action = action

@@ -41,7 +41,7 @@ final class FunctionalClosuresTests: XCTestCase {
         storageForHandler = nil
         
         // object._sum(a, b) // private
-        XCTAssertEqual(object.$sum!((a,b)), c)
+        XCTAssertEqual(object.$sum((a,b)), c)
         XCTAssertEqual(storageForHandler, nil)
         
         object.handleSumResult(action: nil)
