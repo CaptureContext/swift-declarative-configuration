@@ -36,7 +36,7 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
 ## Basic Usage
 
-> See tests for more
+> **See tests for more**
 
 ### No SDC
 
@@ -102,7 +102,7 @@ class ImageViewController: UIViewController {
 
 Note: This way is recommended too, and it is more **safe**, because it modifies existing objects.
 
-### FunctionalHandler
+### FunctionalClosures
 
 ### No SDC
 
@@ -152,7 +152,7 @@ tapRecognizer.onTapGesture?(tapRecognizer)
 
 ```swift
 public class TapGestureRecognizer: UITapGestureRecognizer {
-    @FunctionalHandler<TapGestureRecognizer>
+    @Handler<TapGestureRecognizer>
     var onTapGesture
     
     init() {
@@ -237,9 +237,9 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 
 > **Note:** Your NSObject classes **must** implement `init()` to use Configurators. It's a little trade-off for the convenience it brings to your codebase, see [tests](./Tests/DeclarativeConfigurationTests/ConfiguratorTests.swift) for an example.
 
-#### FunctionalDataSource
+#### DataSource
 
-`FunctionalDataSource` type is very similar to the `FunctionalHandler`, but if `FunctionalHandler<Input>` is kinda `FunctionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
+`OptiomalDataSource` and `DataSource` types are very similar to the `Handler`, but if `Handler<Input>` is kinda `OptionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
 
 ## Installation
 
