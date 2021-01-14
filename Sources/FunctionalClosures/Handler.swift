@@ -65,6 +65,10 @@ public class Handler<Input> {
     public func callAsFunction(_ input: Input) {
         projectedValue?(input)
     }
+    
+    public func callAsFunction() where Input == Void {
+        projectedValue?(())
+    }
 }
 
 // MARK: Typed handlers
