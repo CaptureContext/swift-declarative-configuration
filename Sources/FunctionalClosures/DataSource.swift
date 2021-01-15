@@ -30,7 +30,7 @@ public class DataSource<Input, Output> {
         projectedValue(input)
     }
     
-    public func callAsFunction() where Input == Void {
+    public func callAsFunction() -> Output where Input == Void {
         projectedValue(())
     }
 }
@@ -72,7 +72,7 @@ public class OptionalDataSource<Input, Output> {
         projectedValue?(input)
     }
     
-    public func callAsFunction() where Input == Void {
+    public func callAsFunction() -> Output? where Input == Void {
         projectedValue?(())
     }
 }
