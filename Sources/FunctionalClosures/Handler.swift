@@ -13,7 +13,7 @@ public class Handler<Input> {
             self.action = action
         }
         
-        public mutating func callAsFunction(action: ((Input) -> Void)?) {
+        public mutating func callAsFunction(perform action: ((Input) -> Void)?) {
             self.action = action
         }
         
@@ -87,7 +87,7 @@ public class Handler2<T0, T1> {
             self.action = action
         }
         
-        public mutating func callAsFunction(action: ((T0, T1) -> Void)?) {
+        public mutating func callAsFunction(perform action: ((T0, T1) -> Void)?) {
             self.action = action
         }
         
@@ -155,7 +155,7 @@ public class Handler3<T0, T1, T2> {
             self.action = action
         }
         
-        public mutating func callAsFunction(action: ((T0, T1, T2) -> Void)?) {
+        public mutating func callAsFunction(perform action: ((T0, T1, T2) -> Void)?) {
             self.action = action
         }
         
@@ -223,7 +223,7 @@ public class Handler4<T0, T1, T2, T3> {
             self.action = action
         }
         
-        public mutating func callAsFunction(action: ((T0, T1, T2, T3) -> Void)?) {
+        public mutating func callAsFunction(perform action: ((T0, T1, T2, T3) -> Void)?) {
             self.action = action
         }
         
@@ -291,7 +291,7 @@ public class Handler5<T0, T1, T2, T3, T4> {
             self.action = action
         }
         
-        public mutating func callAsFunction(action: ((T0, T1, T2, T3, T4) -> Void)?) {
+        public mutating func callAsFunction(perform action: ((T0, T1, T2, T3, T4) -> Void)?) {
             self.action = action
         }
         
