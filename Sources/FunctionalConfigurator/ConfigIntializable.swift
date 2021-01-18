@@ -23,4 +23,5 @@ extension ConfigInitializable {
     }
 }
 
-extension NSObject: ConfigInitializable {}
+protocol ConfigInitializableNSObject: NSObject, ConfigInitializable {}
+extension NSObject: ConfigInitializableNSObject {}
