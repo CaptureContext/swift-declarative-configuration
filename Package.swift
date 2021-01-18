@@ -42,7 +42,10 @@ let package = Package(
                 .target(name: "FunctionalClosures"),
                 .target(name: "FunctionalKeyPath"),
                 .target(name: "FunctionalModification"),
-                .product(name: "CasePaths", package: "swift-case-paths")
+                .product(
+                    name: "CasePaths",
+                    package: "swift-case-paths"
+                )
             ]
         ),
         .target(
