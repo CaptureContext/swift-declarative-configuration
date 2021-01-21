@@ -195,6 +195,17 @@ extension Configurator {
         var configurator: Configurator
         var keyPath: FunctionalKeyPath<Base, Value>
         
+        public func scope(
+            _ configuration: @escaping (Configurator<Value>) -> Configurator<Value>
+        ) -> Configurator where Value: AnyObject {
+            configurator.appendingConfiguration { base in
+                keyPath.embed(
+                    modification(of: keyPath.extract(from: base), with: configuration),
+                    in: base
+                )
+            }
+        }
+        
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> where Value: AnyObject {

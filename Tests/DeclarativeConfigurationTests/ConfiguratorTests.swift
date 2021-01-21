@@ -123,16 +123,24 @@ final class ConfiguratorTests: XCTestCase {
     }
     
     func testScope() {
-        struct Container: ConfigInitializable, Equatable {
-            struct Content: Equatable {
+        struct Container: ConfigInitializable {
+            class Content {
                 var a: Int = 0
                 var b: Int = 0
                 var c: Int = 0
+                
+                init() {}
             }
-            var content: Content = .init()
+            
+            let content: Content = .init()
         }
         
-        let expected = Container(content: .init(a: 1, b: 2, c: 3))
+        let expected = Container { $0
+            .content.a(1)
+            .content.b(2)
+            .content.c(3)
+        }
+        
         let actual = Container { $0
             .content.scope { $0
                 .a(1)
@@ -141,6 +149,8 @@ final class ConfiguratorTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(actual.content.a, expected.content.a)
+        XCTAssertEqual(actual.content.b, expected.content.b)
+        XCTAssertEqual(actual.content.c, expected.content.c)
     }
 }
