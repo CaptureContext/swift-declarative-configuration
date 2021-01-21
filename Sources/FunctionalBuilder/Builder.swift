@@ -234,6 +234,19 @@ extension Builder {
         var builder: Builder
         var keyPath: FunctionalKeyPath<Base, Value>
         
+        public func scope(
+            _ builder: @escaping (Builder<Value>) -> Builder<Value>
+        ) -> Builder where Value: AnyObject {
+            Builder(
+                self.builder._initialValue,
+                self.builder._configurator.appendingConfiguration { base in
+                    keyPath.embed(
+                        builder(.init(keyPath.extract(from: base))).build(),
+                        in: base)
+                }
+            )
+        }
+        
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> where Value: AnyObject {
