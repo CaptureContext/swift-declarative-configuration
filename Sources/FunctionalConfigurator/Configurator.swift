@@ -148,6 +148,17 @@ extension Configurator {
             }
         }
         
+        public func scope(
+            _ configuration: @escaping (Configurator<Value>) -> Configurator<Value>
+        ) -> Configurator {
+            _block.configurator.appendingConfiguration { base in
+                _block.keyPath.embed(
+                    modification(of: _block.keyPath.extract(from: base), with: configuration),
+                    in: base
+                )
+            }
+        }
+        
         public subscript<LocalValue>(
             dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
         ) -> CallableBlock<LocalValue> {

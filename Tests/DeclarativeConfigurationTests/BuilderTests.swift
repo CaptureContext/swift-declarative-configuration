@@ -56,4 +56,27 @@ final class BuilderTests: XCTestCase {
         
         XCTAssertEqual(flag, false, "Reinforce transform wasn't called")
     }
+    
+    func testScope() {
+        struct Container: BuilderProvider, Equatable {
+            struct Content: Equatable {
+                var a: Int = 0
+                var b: Int = 0
+                var c: Int = 0
+            }
+            var content: Content = .init()
+        }
+        
+        let expected = Container(content: .init(a: 1, b: 2, c: 3))
+        let initial = Container()
+        let actual = initial.builder
+            .content.scope { $0
+                .a(1)
+                .b(2)
+                .c(3)
+            }.build()
+        
+        XCTAssertNotEqual(initial, expected)
+        XCTAssertEqual(actual, expected)
+    }
 }
