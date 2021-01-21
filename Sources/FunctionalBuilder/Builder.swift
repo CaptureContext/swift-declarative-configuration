@@ -126,12 +126,43 @@ extension Builder {
             )
         }
         
-        public func callAsFunction(if condition: Bool, _ value: @escaping @autoclosure () -> Value) -> Builder {
+        public func callAsFunction(
+            if condition: Bool, then thenValue: @escaping @autoclosure () -> Value
+        ) -> Builder {
             Builder(
                 _block.builder._initialValue,
                 _block.builder._configurator.appendingConfiguration { base in
                     if condition {
-                        return _block.keyPath.embed(value(), in: base)
+                        return _block.keyPath.embed(thenValue(), in: base)
+                    } else {
+                        return base
+                    }
+                }
+            )
+        }
+        
+        public func scope(_ builder: @escaping (Builder<Value>) -> Builder<Value>) -> Builder {
+            Builder(
+                _block.builder._initialValue,
+                _block.builder._configurator.appendingConfiguration { base in
+                    _block.keyPath.embed(
+                        builder(.init(_block.keyPath.extract(from: base))).build(),
+                        in: base)
+                }
+            )
+        }
+        
+        public func callAsFunction(
+            if condition: Bool, then thenValue: @escaping @autoclosure () -> Value,
+            else elseValue: (() -> Value)? = nil
+        ) -> Builder {
+            Builder(
+                _block.builder._initialValue,
+                _block.builder._configurator.appendingConfiguration { base in
+                    if condition {
+                        return _block.keyPath.embed(thenValue(), in: base)
+                    } else if let value = elseValue?() {
+                        return _block.keyPath.embed(value, in: base)
                     } else {
                         return base
                     }
