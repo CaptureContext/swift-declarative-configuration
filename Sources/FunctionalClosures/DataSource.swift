@@ -35,7 +35,6 @@ public class DataSource<Input, Output> {
     }
 }
 
-
 /// A wrapper for clusure-based interaction between objects
 ///
 /// Provides a public API to set internal closure-based datasource with a functional API

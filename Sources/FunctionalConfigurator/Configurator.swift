@@ -42,7 +42,12 @@ public struct Configurator<Base> {
         }
     }
     
+    public func combined(with configurator: Configurator) -> Configurator {
+        appendingConfiguration(configurator._configure)
+    }
+    
     /// Appends modification of a new configurator to stored configuration
+    @available(*, deprecated, message: "Use `combined(with:) instead`")
     public func appending(_ configurator: Configurator) -> Configurator {
         appendingConfiguration(configurator._configure)
     }
@@ -153,7 +158,7 @@ extension Configurator {
         ) -> Configurator {
             _block.configurator.appendingConfiguration { base in
                 _block.keyPath.embed(
-                    modification(of: _block.keyPath.extract(from: base), with: configuration),
+                    _modification(of: _block.keyPath.extract(from: base), with: configuration),
                     in: base
                 )
             }
@@ -200,7 +205,7 @@ extension Configurator {
         ) -> Configurator where Value: AnyObject {
             configurator.appendingConfiguration { base in
                 keyPath.embed(
-                    modification(of: keyPath.extract(from: base), with: configuration),
+                    _modification(of: keyPath.extract(from: base), with: configuration),
                     in: base
                 )
             }

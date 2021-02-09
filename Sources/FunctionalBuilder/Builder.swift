@@ -47,6 +47,20 @@ public struct Builder<Base> {
         reinforce { base in transform(&base, t0, t1, t2) }
     }
     
+    public func combined(with builder: Builder) -> Builder {
+        Builder(
+            _initialValue,
+            _configurator.combined(with: builder._configurator)
+        )
+    }
+    
+    public func combined(with configurator: Configurator<Base>) -> Builder {
+        Builder(
+            _initialValue,
+            _configurator.combined(with: configurator)
+        )
+    }
+    
     /// Creates a new instance of builder with initial value
     public init(_ initialValue: @escaping @autoclosure () -> Base) {
         self.init(
