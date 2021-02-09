@@ -258,6 +258,11 @@ If you use SwiftPM for your project, you can add DeclarativeConfiguration to you
 ```swift
 .package(url: "git@github.com:makeupstudio/swift-declarative-configuration.git", .branch("main"))
 ```
+or
+
+```swift
+.package(url: "git@github.com:makeupstudio/swift-declarative-configuration.git", .exact("0.2.0"))
+```
 
 Do not forget about target dependencies:
 
