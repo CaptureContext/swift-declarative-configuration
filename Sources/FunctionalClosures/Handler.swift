@@ -18,7 +18,7 @@ public class Handler<Input> {
         }
         
         @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
+        This API will be removed, \
         consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
@@ -92,7 +92,7 @@ public class Handler2<T0, T1> {
         }
         
         @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
+        This API will be removed, \
         consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
@@ -160,7 +160,7 @@ public class Handler3<T0, T1, T2> {
         }
         
         @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
+        This API will be removed, \
         consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
@@ -228,7 +228,7 @@ public class Handler4<T0, T1, T2, T3> {
         }
         
         @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
+        This API will be removed, \
         consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
@@ -296,7 +296,7 @@ public class Handler5<T0, T1, T2, T3, T4> {
         }
         
         @available(*, deprecated, message: """
-        This API is not stable yet and may change (or may not), \
+        This API will be removed, \
         consider using redeclaration with `(Input) -> Output` signature function. \
         Feel free to discuss the API here \
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
