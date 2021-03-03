@@ -1,8 +1,6 @@
 # Swift Declarative Configuration
 
-[![Swift](https://github.com/MakeupStudio/swift-declarative-configuration/workflows/swift/badge.svg)](https://github.com/MakeupStudio/swift-declarative-configuration/actions?query=workflow%3Aswift)
-[![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/)
-[![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
+[![Swift](https://github.com/MakeupStudio/swift-declarative-configuration/workflows/swift/badge.svg)](https://github.com/MakeupStudio/swift-declarative-configuration/actions?query=workflow%3Aswift) [![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/) [![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
 
 Swift Declarative Configuration (SDC, for short) is a tiny library, that enables you to configure your objects in a declarative, consistent and understandable way, with ergonomics in mind. It can be used to configure any objects on any platform, including server-side-swift.
 
@@ -12,9 +10,9 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
   Provides modification functions for copying and modifying immutable stuff. It is useful for self-configuring objects like builder, when modificating methods should return modified `self`
 
-- **[FunctionalKeyPath](./Sources/FunctionalKeyPath)** & **[CasePaths](https://github.com/pointfreeco/swift-case-paths)**
+- **[FunctionalKeyPath](./Sources/FunctionalKeyPath)**
 
-  KeyPath functional wrappers, one is generalized and the other is for enums. _[CasePath is a dependency](https://github.com/pointfreeco/swift-case-paths)_.
+  Functional KeyPath wrapper.
 
 - **[FunctionalConfigurator](./Sources/FunctionalConfigurator)**
 

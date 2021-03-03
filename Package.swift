@@ -30,9 +30,6 @@ let package = Package(
             targets: ["FunctionalModification"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-case-paths.git", from: "0.1.2")
-    ],
     targets: [
         .target(
             name: "DeclarativeConfiguration",
@@ -41,11 +38,7 @@ let package = Package(
                 .target(name: "FunctionalConfigurator"),
                 .target(name: "FunctionalClosures"),
                 .target(name: "FunctionalKeyPath"),
-                .target(name: "FunctionalModification"),
-                .product(
-                    name: "CasePaths",
-                    package: "swift-case-paths"
-                )
+                .target(name: "FunctionalModification")
             ]
         ),
         .target(
