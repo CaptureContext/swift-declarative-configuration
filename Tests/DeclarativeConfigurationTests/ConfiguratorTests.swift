@@ -18,11 +18,10 @@ final class ConfiguratorTests: XCTestCase {
 
     let valueConfigurator = Configurator<TestConfigurable>()
       .value(true)
-
-    let configurator =
-      wrappedConfiguator
-      .appending(valueConfigurator)
-
+    
+    let configurator = wrappedConfiguator
+      .combined(with: valueConfigurator)
+    
     let initial = TestConfigurable()
     let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
     let actual = configurator.configured(initial)

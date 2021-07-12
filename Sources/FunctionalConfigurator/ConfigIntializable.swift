@@ -5,8 +5,6 @@ public protocol ConfigInitializable {
   init()
 }
 
-public protocol ConfigInitializableNSObject: NSObject {}
-
 extension ConfigInitializable {
   public typealias Config = Configurator<Self>
 
@@ -25,9 +23,10 @@ extension ConfigInitializable {
   }
 }
 
-extension ConfigInitializableNSObject {
+public protocol ConfigInitializableNSObject: NSObjectProtocol {}
+extension ConfigInitializableNSObject where Self: NSObject {
   public typealias Config = Configurator<Self>
-
+  
   /// Instantiates a new object with specified configuration
   ///
   /// Note: Type must implement custom intializer with no parameters, even if it inherits from NSObject
