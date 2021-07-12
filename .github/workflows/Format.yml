@@ -1,0 +1,26 @@
+name: Format
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  swift_format:
+    name: swift-format
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        run: |
+          brew tap edudo-inc/formulae
+          brew install Formulae/swift-format
+      - name: Format
+        run: make format
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'ci: swift-format'
+          branch: 'main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
