@@ -6,6 +6,7 @@
     },
     "maximumBlankLines": 1,
     "respectsExistingLineBreaks": true,
+    "respectsCompactFunctions": true,
     "lineBreakBeforeControlFlowKeywords": true,
     "lineBreakBeforeEachArgument": true
 }

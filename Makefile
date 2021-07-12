@@ -1,3 +1,3 @@
 format:
 	swift-format --in-place --recursive \
-		./Package.swift ./Sources
+		./Package.swift ./Sources ./Tests
