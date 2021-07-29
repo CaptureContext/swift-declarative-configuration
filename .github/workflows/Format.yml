@@ -12,9 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install
-        run: |
-          brew tap edudo-inc/formulae
-          brew install Formulae/swift-format
+        run: make install_format
       - name: Format
         run: make format
       - uses: stefanzweifel/git-auto-commit-action@v4
