@@ -61,9 +61,19 @@ final class BuilderTests: XCTestCase {
   func testScope() {
     struct Container: BuilderProvider {
       class Content {
+        class InnerClass {
+          var value: Int = 0
+        }
+
+        struct InnerStruct {
+          var value: Int = 0
+        }
+
         var a: Int = 0
         var b: Int = 0
         var c: Int = 0
+        let innerClass: InnerClass? = nil
+        var innerStruct: InnerStruct? = nil
 
         init() {}
       }
@@ -75,7 +85,10 @@ final class BuilderTests: XCTestCase {
       .content.a(1)
       .content.b(2)
       .content.c(3)
+      .content.innerClass.value(1)
+      .content.innerStruct.value(1)
       .build()
+
     let initial = Container()
     let actual = Container().builder
       .content.scope {
@@ -83,14 +96,23 @@ final class BuilderTests: XCTestCase {
           .a(1)
           .b(2)
           .c(3)
+          .innerClass
+          .ifLetScope {
+            $0
+              .value(1)
+          }
       }.build()
 
     XCTAssertNotEqual(actual.content.a, initial.content.a)
     XCTAssertNotEqual(actual.content.b, initial.content.b)
     XCTAssertNotEqual(actual.content.c, initial.content.c)
+    XCTAssertEqual(actual.content.innerClass?.value, initial.content.innerClass?.value)
+    XCTAssertEqual(actual.content.innerStruct?.value, initial.content.innerStruct?.value)
 
     XCTAssertEqual(actual.content.a, expected.content.a)
     XCTAssertEqual(actual.content.b, expected.content.b)
     XCTAssertEqual(actual.content.c, expected.content.c)
+    XCTAssertEqual(actual.content.innerClass?.value, expected.content.innerClass?.value)
+    XCTAssertEqual(actual.content.innerStruct?.value, expected.content.innerStruct?.value)
   }
 }

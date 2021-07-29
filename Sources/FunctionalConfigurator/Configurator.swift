@@ -164,6 +164,18 @@ extension Configurator {
       }
     }
 
+    public func ifLetScope<Wrapped>(
+      _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
+    ) -> Configurator where Value == Wrapped? {
+      _block.configurator.appendingConfiguration { base in
+        guard let value = _block.keyPath.extract(from: base) else { return base }
+        return _block.keyPath.embed(
+          _modification(of: value, with: configuration),
+          in: base
+        )
+      }
+    }
+
     public subscript<LocalValue>(
       dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
     ) -> CallableBlock<LocalValue> {
@@ -206,6 +218,18 @@ extension Configurator {
       configurator.appendingConfiguration { base in
         keyPath.embed(
           _modification(of: keyPath.extract(from: base), with: configuration),
+          in: base
+        )
+      }
+    }
+
+    public func ifLetScope<Wrapped>(
+      _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
+    ) -> Configurator where Wrapped: AnyObject, Value == Wrapped? {
+      configurator.appendingConfiguration { base in
+        guard let value = keyPath.extract(from: base) else { return base }
+        return keyPath.embed(
+          _modification(of: value, with: configuration),
           in: base
         )
       }

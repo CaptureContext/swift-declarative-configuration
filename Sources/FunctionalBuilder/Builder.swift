@@ -173,6 +173,21 @@ extension Builder {
       )
     }
 
+    public func ifLetScope<Wrapped>(
+      _ builder: @escaping (Builder<Wrapped>) -> Builder<Wrapped>
+    ) -> Builder where Value == Wrapped? {
+      Builder(
+        _block.builder._initialValue,
+        _block.builder._configurator.appendingConfiguration { base in
+          guard let value = _block.keyPath.extract(from: base) else { return base }
+          return _block.keyPath.embed(
+            builder(.init(value)).build(),
+            in: base
+          )
+        }
+      )
+    }
+
     public func callAsFunction(
       if condition: Bool,
       then thenValue: @escaping @autoclosure () -> Value,
@@ -266,6 +281,21 @@ extension Builder {
         self.builder._configurator.appendingConfiguration { base in
           keyPath.embed(
             builder(.init(keyPath.extract(from: base))).build(),
+            in: base
+          )
+        }
+      )
+    }
+
+    public func ifLetScope<Wrapped>(
+      _ builder: @escaping (Builder<Wrapped>) -> Builder<Wrapped>
+    ) -> Builder where Wrapped: AnyObject, Value == Wrapped? {
+      Builder(
+        self.builder._initialValue,
+        self.builder._configurator.appendingConfiguration { base in
+          guard let value = keyPath.extract(from: base) else { return base }
+          return keyPath.embed(
+            builder(.init(value)).build(),
             in: base
           )
         }

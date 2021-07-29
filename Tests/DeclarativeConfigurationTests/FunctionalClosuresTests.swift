@@ -75,10 +75,11 @@ final class FunctionalClosuresTests: XCTestCase {
     let storage = Storage()
 
     let object =
-      Object { $0
-      // Handle only result
-      .$handleSum(assignThird(to: storage, \.result))
-    }
+      Object {
+        $0
+          // Handle only result
+          .$handleSum(assignThird(to: storage, \.result))
+      }
 
     let a = 10
     let b = 20

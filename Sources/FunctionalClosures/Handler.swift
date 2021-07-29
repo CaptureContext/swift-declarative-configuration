@@ -27,8 +27,7 @@ public class Handler<Input> {
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """
     )
-    public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((Input) -> Void)?)
-    {
+    public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((Input) -> Void)?) {
       switch behaviour {
       case .resetting:
         self.action = action
@@ -107,8 +106,7 @@ public class Handler2<T0, T1> {
         https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
         """
     )
-    public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1) -> Void)?)
-    {
+    public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1) -> Void)?) {
       switch behaviour {
       case .resetting:
         self.action = action
