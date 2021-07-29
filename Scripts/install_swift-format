@@ -1,0 +1,83 @@
+#!/bin/bash
+
+_get_parent_dir_abs_path() {
+  echo "$(cd "$(dirname "$1")" && pwd)"
+}
+
+# ––––––––––––––––––––––––––– config –––––––––––––––––––––––––––
+
+TOOL_NAME="swift-format"
+TOOL_OWNER="apple"
+TOOL_CHECKOUT="tags/0.50400.0"
+
+# ––––––––––––––––––––––––– constants ––––––––––––––––––––––––––
+
+SCRIPT_DIR=$(_get_parent_dir_abs_path $0)
+TOOLS_INSTALL_PATH="${SCRIPT_DIR}/.installed"
+TOOL_INSTALL_PATH="${TOOLS_INSTALL_PATH}/${TOOL_NAME}"
+TEMP_INSTALL_PATH="${TOOLS_INSTALL_PATH}/install-${TOOL_NAME}"
+
+# ––––––––––––––––––––––––––– steps ––––––––––––––––––––––––––––
+
+tool_fetch() {
+  git clone "https://github.com/${TOOL_OWNER}/${TOOL_NAME}.git"
+  cd "${TOOL_NAME}"
+  git checkout ${TOOL_CHECKOUT}
+}
+
+tool_build() {
+  swift build --product="${TOOL_NAME}" -c release --disable-sandbox
+}
+
+tool_install() {
+  install "${TEMP_INSTALL_PATH}/${TOOL_NAME}/.build/release/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
+}
+
+# ––––––––––––––––––––––––––– script –––––––––––––––––––––––––––
+
+set_bold=$(tput bold)
+set_normal=$(tput sgr0)
+
+log() {
+  printf "\n$1 ${set_bold}$2${set_normal}\n"
+}
+
+_trap_exit() {
+  rm -rf "${TEMP_INSTALL_PATH}"
+}
+
+set -e
+trap _trap_exit err exit SIGTERM SIGINT
+
+if [ -f "${TOOL_INSTALL_PATH}" ]; then
+  log "⚠️" " ${TOOL_NAME} already installed"
+  exit 0
+fi
+
+if [ ! -d "${TEMP_INSTALL_PATH}" ]; then
+  mkdir -p "${TEMP_INSTALL_PATH}"
+fi
+
+cd "${TEMP_INSTALL_PATH}"
+
+log "⬇️" " Fetching ${TOOL_NAME}...\n"
+
+tool_fetch
+
+log "🔨" "Building ${TOOL_NAME}...\n"
+
+tool_build
+
+log "♻️" " Installing ${TOOL_NAME}..."
+
+tool_install
+
+log "💧" "Performing cleanup..."
+rm -rf "${TEMP_INSTALL_PATH}"
+
+if [ -f "${TOOL_INSTALL_PATH}" ]; then
+  log "✅" "${TOOL_NAME} successfully installed"
+  exit 0
+fi
+
+log "🚫" "${TOOL_NAME} failed to install"
