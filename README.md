@@ -1,5 +1,5 @@
 > **Note**:
-> The framework moved to https://github.com/capturecontext
+> The framework moved to https://github.com/capturecontext/swift-declarative-configuration
 
 # Swift Declarative Configuration
 
