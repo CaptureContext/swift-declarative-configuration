@@ -1,3 +1,6 @@
+> **Note**:
+> The framework moved to https://github.com/capturecontext
+
 # Swift Declarative Configuration
 
 [![Swift](https://github.com/MakeupStudio/swift-declarative-configuration/workflows/swift/badge.svg)](https://github.com/MakeupStudio/swift-declarative-configuration/actions?query=workflow%3Aswift) [![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/) [![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
