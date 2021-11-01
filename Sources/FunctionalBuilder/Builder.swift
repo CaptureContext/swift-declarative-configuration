@@ -303,8 +303,8 @@ extension Builder {
     }
 
     public subscript<LocalValue>(
-      dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
-    ) -> CallableBlock<LocalValue> where Value: AnyObject {
+      dynamicMember keyPath: ReferenceWritableKeyPath<Value, LocalValue>
+    ) -> CallableBlock<LocalValue> {
       CallableBlock<LocalValue>(
         builder: self.builder,
         keyPath: self.keyPath.appending(path: .init(keyPath))
@@ -321,8 +321,8 @@ extension Builder {
     }
 
     public subscript<Wrapped, LocalValue>(
-      dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
-    ) -> CallableBlock<LocalValue?> where Wrapped: AnyObject, Value == Wrapped? {
+      dynamicMember keyPath: ReferenceWritableKeyPath<Wrapped, LocalValue>
+    ) -> CallableBlock<LocalValue?> where Value == Wrapped? {
       CallableBlock<LocalValue?>(
         builder: self.builder,
         keyPath: self.keyPath.appending(

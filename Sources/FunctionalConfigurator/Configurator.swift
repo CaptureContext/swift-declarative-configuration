@@ -236,8 +236,8 @@ extension Configurator {
     }
 
     public subscript<LocalValue>(
-      dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
-    ) -> CallableBlock<LocalValue> where Value: AnyObject {
+      dynamicMember keyPath: ReferenceWritableKeyPath<Value, LocalValue>
+    ) -> CallableBlock<LocalValue> {
       .init(
         configurator: self.configurator,
         keyPath: self.keyPath.appending(path: FunctionalKeyPath(keyPath))
@@ -254,8 +254,8 @@ extension Configurator {
     }
 
     public subscript<Wrapped, LocalValue>(
-      dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
-    ) -> CallableBlock<LocalValue?> where Wrapped: AnyObject, Value == Wrapped? {
+      dynamicMember keyPath: ReferenceWritableKeyPath<Wrapped, LocalValue>
+    ) -> CallableBlock<LocalValue?> where Value == Wrapped? {
       CallableBlock<LocalValue?>(
         configurator: self.configurator,
         keyPath: self.keyPath.appending(path: FunctionalKeyPath(keyPath))
