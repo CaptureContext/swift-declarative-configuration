@@ -3,7 +3,7 @@
 
 # Swift Declarative Configuration
 
-[![Swift](https://github.com/MakeupStudio/swift-declarative-configuration/workflows/swift/badge.svg)](https://github.com/MakeupStudio/swift-declarative-configuration/actions?query=workflow%3Aswift) [![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/) [![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
+[![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/) [![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
 
 Swift Declarative Configuration (SDC, for short) is a tiny library, that enables you to configure your objects in a declarative, consistent and understandable way, with ergonomics in mind. It can be used to configure any objects on any platform, including server-side-swift.
 
