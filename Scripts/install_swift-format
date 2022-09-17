@@ -22,7 +22,7 @@ TEMP_INSTALL_PATH="${TOOLS_INSTALL_PATH}/install-${TOOL_NAME}"
 tool_fetch() {
   git clone "https://github.com/${TOOL_OWNER}/${TOOL_NAME}.git"
   cd "${TOOL_NAME}"
-  git checkout "tags/${TOOL_CHECKOUT}"
+  git checkout "tags/${TOOL_VERSION}"
 }
 
 tool_build() {
