@@ -153,8 +153,7 @@ extension Builder {
         _block.builder._configurator.appendingConfiguration { base in
           if condition {
             return _block.keyPath.embed(thenValue(), in: base)
-          }
-          else {
+          } else {
             return base
           }
         }
@@ -198,11 +197,9 @@ extension Builder {
         _block.builder._configurator.appendingConfiguration { base in
           if condition {
             return _block.keyPath.embed(thenValue(), in: base)
-          }
-          else if let value = elseValue?() {
+          } else if let value = elseValue?() {
             return _block.keyPath.embed(value, in: base)
-          }
-          else {
+          } else {
             return base
           }
         }

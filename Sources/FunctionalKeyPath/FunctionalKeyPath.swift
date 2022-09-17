@@ -143,7 +143,7 @@ extension FunctionalKeyPath {
   public static func key<Key: Hashable, _Value>(
     _ key: Key
   ) -> FunctionalKeyPath
-  where Root == Dictionary<Key, _Value>, Value == _Value? {
+  where Root == [Key: _Value], Value == _Value? {
     FunctionalKeyPath(
       embed: { value, root in
         modification(of: root) { $0[key] = value }
@@ -188,8 +188,8 @@ extension FunctionalKeyPath {
       },
       extract: { root in
         return root.indices.contains(index)
-        ? root[index]
-        : nil
+          ? root[index]
+          : nil
       }
     )
   }
