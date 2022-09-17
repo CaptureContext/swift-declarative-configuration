@@ -8,11 +8,11 @@ on:
 jobs:
   swift_format:
     name: swift-format
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
       - name: Install
-        run: make install_format
+        run: make install_formatter
       - name: Format
         run: make format
       - uses: stefanzweifel/git-auto-commit-action@v4
