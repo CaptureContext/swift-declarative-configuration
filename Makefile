@@ -1,8 +1,9 @@
 install_formatter:
-	./scripts/install_swift-format
+	@chmod +x ./scripts/install_swift-format.sh
+	@./scripts/install_swift-format.sh
 
 format:
-	./Scripts/.bin/swift-format \
+	./scripts/.bin/swift-format \
 		--in-place --recursive \
 		./Package.swift ./Sources ./Tests
 

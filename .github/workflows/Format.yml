@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - experimental/swift-format
 
 jobs:
   swift_format:
