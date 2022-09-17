@@ -1,4 +1,4 @@
-name: swift
+name: Test
 
 on:
   push:
@@ -8,12 +8,11 @@ on:
 
 jobs:
   test_macos:
-    runs-on: macos-12
+    runs-on: macOS-12
     timeout-minutes: 30
-    
     steps:
     - uses: actions/checkout@v2
-      
-    - uses: Didstopia/SwiftAction@v1.0.3
-      with:
-        swift-action: 'make test'
+    - name: Select Xcode 13.4.1
+      run: sudo xcode-select -s /Applications/Xcode_13.4.1.app
+    - name: Run tests
+      run: make test
