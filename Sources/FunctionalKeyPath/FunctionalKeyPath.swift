@@ -1,4 +1,4 @@
-// Source: https://gist.github.com/maximkrouk/6287fb56321a21e8180d5fe044e642e4
+import FunctionalModification
 
 /// A path that supports embedding a value in a root and attempting to extract a root's embedded
 /// value.
@@ -136,5 +136,61 @@ public struct FunctionalKeyPath<Root, Value> {
     path: FunctionalKeyPath<Wrapped, AppendedValue>
   ) -> FunctionalKeyPath<Root, AppendedValue?> where Value == Wrapped? {
     appending(path: path.optional())
+  }
+}
+
+extension FunctionalKeyPath {
+  public static func key<Key: Hashable, _Value>(
+    _ key: Key
+  ) -> FunctionalKeyPath
+  where Root == Dictionary<Key, _Value>, Value == _Value? {
+    FunctionalKeyPath(
+      embed: { value, root in
+        modification(of: root) { $0[key] = value }
+      },
+      extract: { $0[key] }
+    )
+  }
+
+  public static func index(_ index: Root.Index) -> FunctionalKeyPath
+  where Root: MutableCollection, Value == Root.Element {
+    FunctionalKeyPath(
+      embed: { value, root in
+        modification(of: root) { root in
+          root[index] = value
+        }
+      },
+      extract: { root in
+        root[index]
+      }
+    )
+  }
+
+  public static func getonlyIndex(_ index: Root.Index) -> FunctionalKeyPath
+  where Root: Collection, Value == Root.Element {
+    FunctionalKeyPath(
+      embed: { _, root in return root },
+      extract: { $0[index] }
+    )
+  }
+
+  public static func safeIndex(_ index: Root.Index) -> FunctionalKeyPath<Root, Value?>
+  where Root == [Value] {
+    FunctionalKeyPath<Root, Value?>(
+      embed: { value, root in
+        modification(of: root) { root in
+          guard
+            let value = value,
+            root.indices.contains(index)
+          else { return }
+          root[index] = value
+        }
+      },
+      extract: { root in
+        return root.indices.contains(index)
+        ? root[index]
+        : nil
+      }
+    )
   }
 }
