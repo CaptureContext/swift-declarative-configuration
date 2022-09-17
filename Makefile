@@ -1,8 +1,9 @@
-install_format:
+install_formatter:
 	./scripts/install_swift-format
 
 format:
-	./scripts/.installed/swift-format --in-place --recursive \
+	./Scripts/.bin/swift-format \
+		--in-place --recursive \
 		./Package.swift ./Sources ./Tests
 
 test:

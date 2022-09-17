@@ -4,36 +4,36 @@ _get_parent_dir_abs_path() {
   echo "$(cd "$(dirname "$1")" && pwd)"
 }
 
-# ––––––––––––––––––––––––––– config –––––––––––––––––––––––––––
+# ––––––––––––––––––––––––––– Config –––––––––––––––––––––––––––
 
 TOOL_NAME="swift-format"
 TOOL_OWNER="apple"
-TOOL_CHECKOUT="tags/0.50400.0"
+TOOL_VERSION="0.50600.1"
 
-# ––––––––––––––––––––––––– constants ––––––––––––––––––––––––––
+# ––––––––––––––––––––––––– Constants ––––––––––––––––––––––––––
 
 SCRIPT_DIR=$(_get_parent_dir_abs_path $0)
-TOOLS_INSTALL_PATH="${SCRIPT_DIR}/.installed"
+TOOLS_INSTALL_PATH="${SCRIPT_DIR}/.bin"
 TOOL_INSTALL_PATH="${TOOLS_INSTALL_PATH}/${TOOL_NAME}"
 TEMP_INSTALL_PATH="${TOOLS_INSTALL_PATH}/install-${TOOL_NAME}"
 
-# ––––––––––––––––––––––––––– steps ––––––––––––––––––––––––––––
+# ––––––––––––––––––––––––––– Steps ––––––––––––––––––––––––––––
 
 tool_fetch() {
   git clone "https://github.com/${TOOL_OWNER}/${TOOL_NAME}.git"
   cd "${TOOL_NAME}"
-  git checkout ${TOOL_CHECKOUT}
+  git checkout "tags/${TOOL_CHECKOUT}"
 }
 
 tool_build() {
-  swift build --product="${TOOL_NAME}" -c release --disable-sandbox
+  swift build --product="${TOOL_NAME}" -c release --disable-sandbox --build-path '.build'
 }
 
 tool_install() {
   install "${TEMP_INSTALL_PATH}/${TOOL_NAME}/.build/release/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
 }
 
-# ––––––––––––––––––––––––––– script –––––––––––––––––––––––––––
+# ––––––––––––––––––––––––––– Script –––––––––––––––––––––––––––
 
 set_bold=$(tput bold)
 set_normal=$(tput sgr0)
