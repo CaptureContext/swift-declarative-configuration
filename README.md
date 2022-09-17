@@ -1,9 +1,6 @@
-> **Note**:
-> The framework moved to https://github.com/capturecontext/swift-declarative-configuration
-
 # Swift Declarative Configuration
 
-[![SwiftPM 5.3](https://img.shields.io/badge/spm-5.3-ED523F.svg?style=flat)](https://swift.org/download/) [![@maximkrouk](https://img.shields.io/badge/contact-@maximkrouk-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/maximkrouk)
+[![SwiftPM 5.6](https://img.shields.io/badge/swiftpm-5.6-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/Platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/contact-@capturecontext-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
 
 Swift Declarative Configuration (SDC, for short) is a tiny library, that enables you to configure your objects in a declarative, consistent and understandable way, with ergonomics in mind. It can be used to configure any objects on any platform, including server-side-swift.
 
@@ -43,65 +40,64 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
 ```swift
 class ImageViewController: UIViewController {
+  let imageView: UIImageView = {
     let imageView = UIImageView()
+    imageView.contentMode = .scaleAspectFit
+    imageView.backgroundColor = .black
+    imageView.layer.masksToBounds = true
+    imageView.layer.cornerRadius = 10
+    return imageView
+  }()
     
-    override func loadView() {
-        self.view = imageView
-    }
-  
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = .black
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 10
-    }
+  override func loadView() {
+    self.view = imageView
+  }
 }
 ```
 
 ### FunctionalConfigurator
 
+> **Note:** This way is **recommended**, but remember, that custom types **MUST** implement initializer with no parameters even if the superclass already has it or you will get a crash otherwise.
+
 ```swift
 import FunctionalConfigurator
 
 class ImageViewController: UIViewController {
-    
-    let imageView = UIImageView { $0 
-        .contentMode(.scaleAspectFit)
-        .backgroundColor(.black)
-        .layer.masksToBounds(true)
-        .layer.cornerRadius(10)
+  let imageView = UIImageView { $0 
+    .contentMode(.scaleAspectFit)
+    .backgroundColor(.black)
+    .layer.scope { $0
+      .masksToBounds(true)
+      .cornerRadius(10)
     }
+  }
     
-    override func loadView() {
-        self.view = imageView
-    }
-  
+  override func loadView() {
+    self.view = imageView
+  }
 }
 ```
 
-**Note:** This way is **recommended**, but remember, that custom types **MUST** implement initializer with no parameters even if the superclass already has it or you will get a crash otherwise.
-
 ### FunctionalBuilder
+
+> **Note:** This way is recommended too, and it is more **safe**, because it modifies existing objects.
 
 ```swift
 import FunctionalBuilder
 
 class ImageViewController: UIViewController {
-    let imageView = UIImageView().builder
-        .contentMode(.scaleAspectFit)
-        .backgroundColor(.black)
-        .layer.masksToBounds(true)
-        .layer.cornerRadius(10)
-        .build()
+  let imageView = UIImageView().builder
+    .contentMode(.scaleAspectFit)
+    .backgroundColor(.black)
+    .layer.masksToBounds(true)
+    .layer.cornerRadius(10)
+    .build()
     
-    override func loadView() {
-        self.view = imageView
-    }
+  override func loadView() {
+    self.view = imageView
+  }
 }
 ```
-
-Note: This way is recommended too, and it is more **safe**, because it modifies existing objects.
 
 ### FunctionalClosures
 
@@ -111,25 +107,25 @@ Note: This way is recommended too, and it is more **safe**, because it modifies 
 
 ```swift
 public class TapGestureRecognizer: UITapGestureRecognizer {
-    var onTapGesture: ((TapGestureRecognizer) -> Void)?
+  var onTapGesture: ((TapGestureRecognizer) -> Void)?
     
-    init() {
-        super.init(target: nil, action: nil)
-        commonInit()
-    }
+  init() {
+    super.init(target: nil, action: nil)
+    commonInit()
+  }
     
-    override public init(target: Any?, action: Selector?) {
-        super.init(target: target, action: action)
-        commonInit()
-    }
+  override public init(target: Any?, action: Selector?) {
+    super.init(target: target, action: action)
+    commonInit()
+  }
     
-    private func commonInit() {
-        self.addTarget(self, action: #selector(handleTap))
-    }
+  private func commonInit() {
+    self.addTarget(self, action: #selector(handleTap))
+  }
     
-    @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
-        onTapGesture?(recognizer)
-    }
+  @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
+    onTapGesture?(recognizer)
+  }
 }
 ```
 
@@ -153,26 +149,26 @@ tapRecognizer.onTapGesture?(tapRecognizer)
 
 ```swift
 public class TapGestureRecognizer: UITapGestureRecognizer {
-    @Handler<TapGestureRecognizer>
-    var onTapGesture
+  @Handler<TapGestureRecognizer>
+  var onTapGesture
     
-    init() {
-        super.init(target: nil, action: nil)
-        commonInit()
-    }
+  init() {
+    super.init(target: nil, action: nil)
+    commonInit()
+  }
     
-    override public init(target: Any?, action: Selector?) {
-        super.init(target: target, action: action)
-        commonInit()
-    }
+  override public init(target: Any?, action: Selector?) {
+    super.init(target: target, action: action)
+    commonInit()
+  }
     
-    private func commonInit() {
-        self.addTarget(self, action: #selector(handleTap))
-    }
+  private func commonInit() {
+    self.addTarget(self, action: #selector(handleTap))
+  }
     
-    @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
-        _onTapGesture(recognizer)
-    }
+  @objc private func handleTap(_ recognizer: TapGestureRecognizer) {
+    _onTapGesture(recognizer)
+  }
 }
 ```
 
@@ -197,9 +193,9 @@ Also you can create such an instance with `Configurator`:
 
 ```swift
 let tapRecognizer = TapGestureRecognizer { $0 
-    .$onTapGesture { recognizer in 
-        // ...
-    }
+  .$onTapGesture { recognizer in 
+    // ...
+  }
 }
 ```
 
@@ -211,8 +207,8 @@ Customize any object by passing initial value to a builder
 
 ```swift
 let object = Builder(Object())
-    .property.subproperty(value)
-    .build() // Returns modified object
+  .property.subproperty(value)
+  .build() // Returns modified object
 ```
 
 For classes you can avoid returning a value by calling `apply` method, instead of `build`
@@ -220,9 +216,19 @@ For classes you can avoid returning a value by calling `apply` method, instead o
 ```swift
 let _class = _Class()
 Builder(_class)
-    .property.subproperty(value)
-    .apply() // Returns Void
+  .property.subproperty(value)
+  .apply() // Returns Void
 ```
+
+In both Builders and Configurators you can use scoping
+
+```swift
+let object = Object { $0
+  .property.subproperty(value)
+}
+```
+
+
 
 Conform your own types to `BuilderProvider` protocol to access builder property.
 
@@ -240,7 +246,7 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 
 #### DataSource
 
-`OptiomalDataSource` and `DataSource` types are very similar to the `Handler`, but if `Handler<Input>` is kinda `OptionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
+`OptionalDataSource` and `DataSource` types are very similar to the `Handler`, but if `Handler<Input>` is kinda `OptionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
 
 ## Installation
 
@@ -254,15 +260,21 @@ You can add DeclarativeConfiguration to an Xcode project by adding it as a packa
 
 ### Recommended
 
-If you use SwiftPM for your project, you can add DeclarativeConfiguration to your package file. Also my advice will be to use SSH.
+If you use SwiftPM for your project structure, add DeclarativeConfiguration to your package file. 
 
 ```swift
-.package(url: "git@github.com:makeupstudio/swift-declarative-configuration.git", .branch("main"))
+.package(
+  url: "git@github.com:capturecontext/swift-declarative-configuration.git", 
+  .upToNextMinor(from: "0.3.0")
+)
 ```
-or
+or via HTTPS
 
 ```swift
-.package(url: "git@github.com:makeupstudio/swift-declarative-configuration.git", .exact("0.2.0"))
+.package(
+  url: "https://github.com:capturecontext/swift-declarative-configuration.git", 
+  .exact("0.3.0")
+)
 ```
 
 Do not forget about target dependencies:
