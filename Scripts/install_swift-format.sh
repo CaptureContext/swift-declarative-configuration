@@ -6,31 +6,34 @@ _get_parent_dir_abs_path() {
 
 # ––––––––––––––––––––––––––– Config –––––––––––––––––––––––––––
 
-TOOL_NAME="swift-format"
-TOOL_OWNER="apple"
-TOOL_VERSION="0.50600.1"
+TOOL_NAME="swiftformat"
+TOOL_OWNER="nicklockwood"
+TOOL_VERSION="0.50.5"
 
 # ––––––––––––––––––––––––– Constants ––––––––––––––––––––––––––
 
 SCRIPT_DIR=$(_get_parent_dir_abs_path $0)
 TOOLS_INSTALL_PATH="${SCRIPT_DIR}/.bin"
 TOOL_INSTALL_PATH="${TOOLS_INSTALL_PATH}/${TOOL_NAME}"
-TEMP_INSTALL_PATH="${TOOLS_INSTALL_PATH}/install-${TOOL_NAME}"
+TOOL_DOWNLOAD_DIR="${TOOLS_INSTALL_PATH}/_${TOOL_NAME}"
+
+TOOL=${TOOL_INSTALL_PATH}
+TOOL_REPO="https://github.com/${TOOL_OWNER}/${TOOL_NAME}"
+ARCHIVE_NAME="${TOOL_NAME}.artifactbundle"
+ARCHIVE_URL="${TOOL_REPO}/releases/download/${TOOL_VERSION}/${ARCHIVE_NAME}.zip"
 
 # ––––––––––––––––––––––––––– Steps ––––––––––––––––––––––––––––
 
 tool_fetch() {
-  git clone "https://github.com/${TOOL_OWNER}/${TOOL_NAME}.git"
-  cd "${TOOL_NAME}"
-  git checkout "tags/${TOOL_VERSION}"
+  curl -L ${ARCHIVE_URL} -o "${TOOL_DOWNLOAD_DIR}/${ARCHIVE_NAME}.zip"
 }
 
-tool_build() {
-  swift build --product="${TOOL_NAME}" -c release --disable-sandbox --build-path '.build'
+tool_extract() {
+  unzip "${TOOL_DOWNLOAD_DIR}/${ARCHIVE_NAME}.zip" -d ${TOOL_DOWNLOAD_DIR}
 }
 
 tool_install() {
-  install "${TEMP_INSTALL_PATH}/${TOOL_NAME}/.build/release/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
+  install "${TOOL_DOWNLOAD_DIR}/${ARCHIVE_NAME}/${TOOL_NAME}-${TOOL_VERSION}-macos/bin/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
 }
 
 # ––––––––––––––––––––––––––– Script –––––––––––––––––––––––––––
@@ -42,20 +45,20 @@ log() {
   printf "\n$1 ${set_bold}$2${set_normal}\n"
 }
 
-_trap_exit() {
-  rm -rf "${TEMP_INSTALL_PATH}"
+clean_up() {
+  rm -rf "${TOOL_DOWNLOAD_DIR}"
 }
 
 set -e
-trap _trap_exit err exit SIGTERM SIGINT
+trap clean_up err exit SIGTERM SIGINT
 
 if [ -f "${TOOL_INSTALL_PATH}" ]; then
   log "⚠️" " ${TOOL_NAME} already installed"
   exit 0
 fi
 
-if [ ! -d "${TEMP_INSTALL_PATH}" ]; then
-  mkdir -p "${TEMP_INSTALL_PATH}"
+if [ ! -d "${TOOL_DOWNLOAD_DIR}" ]; then
+  mkdir -p "${TOOL_DOWNLOAD_DIR}"
 fi
 
 cd "${TEMP_INSTALL_PATH}"
@@ -64,16 +67,16 @@ log "⬇️" " Fetching ${TOOL_NAME}...\n"
 
 tool_fetch
 
-log "🔨" "Building ${TOOL_NAME}...\n"
+log "📦" " Extracting ${TOOL_NAME}...\n"
 
-tool_build
+tool_extract
 
 log "♻️" " Installing ${TOOL_NAME}..."
 
 tool_install
 
 log "💧" "Performing cleanup..."
-rm -rf "${TEMP_INSTALL_PATH}"
+clean_up
 
 if [ -f "${TOOL_INSTALL_PATH}" ]; then
   log "✅" "${TOOL_NAME} successfully installed"
