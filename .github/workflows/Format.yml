@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - main
-      - experimental/swift-format
 
 jobs:
   swift_format:
     if: |
-      !startsWith(github.event.head_commit.message, '[ci skip]') &&
-      !startsWith(github.event.head_commit.message, '[ci skip format]') &&
-      !startsWith(github.event.head_commit.message, '[ci skip swift_format]')
+      !contains(github.event.head_commit.message, '[ci skip]') &&
+      !contains(github.event.head_commit.message, '[ci skip format]')
     name: swift-format
     runs-on: macos-12
     steps:
@@ -22,7 +20,7 @@ jobs:
         run: make format
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 'ci: swift-format'
+          commit_message: 'style(ci): run swiftformat'
           branch: 'main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

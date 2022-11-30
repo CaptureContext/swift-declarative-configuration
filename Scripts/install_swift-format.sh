@@ -6,9 +6,9 @@ _get_parent_dir_abs_path() {
 
 # ––––––––––––––––––––––––––– Config –––––––––––––––––––––––––––
 
-TOOL_NAME="swift-format"
-TOOL_OWNER="CaptureContext"
-TOOL_VERSION="0.50600.1"
+TOOL_NAME="swiftformat"
+TOOL_OWNER="nicklockwood"
+TOOL_VERSION="0.50.5"
 
 # ––––––––––––––––––––––––– Constants ––––––––––––––––––––––––––
 
@@ -19,8 +19,8 @@ TOOL_DOWNLOAD_DIR="${TOOLS_INSTALL_PATH}/_${TOOL_NAME}"
 
 TOOL=${TOOL_INSTALL_PATH}
 TOOL_REPO="https://github.com/${TOOL_OWNER}/${TOOL_NAME}"
-ARCHIVE_NAME="x86_64"
-ARCHIVE_URL="${TOOL_REPO}/releases/download/0.50600.1/${ARCHIVE_NAME}.zip" # todo: support other archs
+ARCHIVE_NAME="${TOOL_NAME}.artifactbundle"
+ARCHIVE_URL="${TOOL_REPO}/releases/download/${TOOL_VERSION}/${ARCHIVE_NAME}.zip"
 
 # ––––––––––––––––––––––––––– Steps ––––––––––––––––––––––––––––
 
@@ -33,7 +33,7 @@ tool_extract() {
 }
 
 tool_install() {
-  install "${TOOL_DOWNLOAD_DIR}/${ARCHIVE_NAME}/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
+  install "${TOOL_DOWNLOAD_DIR}/${ARCHIVE_NAME}/${TOOL_NAME}-${TOOL_VERSION}-macos/bin/${TOOL_NAME}" "${TOOLS_INSTALL_PATH}"
 }
 
 # ––––––––––––––––––––––––––– Script –––––––––––––––––––––––––––
