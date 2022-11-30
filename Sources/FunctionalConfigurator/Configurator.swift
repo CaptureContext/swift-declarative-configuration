@@ -140,13 +140,18 @@ extension Configurator {
     }
 
     public func callAsFunction(_ value: Value) -> Configurator {
-      _block.configurator.appendingConfiguration { _block.keyPath.embed(value, in: $0) }
+      _block.configurator.appendingConfiguration {
+        _block.keyPath.embed(value, in: $0)
+      }
     }
 
     public func set(_ transform: @escaping (inout Value) -> Void) -> Configurator {
       _block.configurator.appendingConfiguration { base in
         _block.keyPath.embed(
-          modification(of: _block.keyPath.extract(from: base), with: transform),
+          modification(
+            of: _block.keyPath.extract(from: base),
+            with: transform
+          ),
           in: base
         )
       }
@@ -157,7 +162,10 @@ extension Configurator {
     ) -> Configurator {
       _block.configurator.appendingConfiguration { base in
         _block.keyPath.embed(
-          _modification(of: _block.keyPath.extract(from: base), with: configuration),
+          _modification(
+            of: _block.keyPath.extract(from: base),
+            with: configuration
+          ),
           in: base
         )
       }
@@ -167,7 +175,9 @@ extension Configurator {
       _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
     ) -> Configurator where Value == Wrapped? {
       _block.configurator.appendingConfiguration { base in
-        guard let value = _block.keyPath.extract(from: base) else { return base }
+        guard let value = _block.keyPath.extract(from: base)
+        else { return base }
+
         return _block.keyPath.embed(
           _modification(of: value, with: configuration),
           in: base
@@ -180,7 +190,8 @@ extension Configurator {
     ) -> CallableBlock<LocalValue> {
       CallableBlock<LocalValue>(
         configurator: _block.configurator,
-        keyPath: _block.keyPath.appending(path: FunctionalKeyPath(keyPath))
+        keyPath: _block.keyPath
+          .appending(path: FunctionalKeyPath(keyPath))
       )
     }
 
@@ -195,7 +206,9 @@ extension Configurator {
     ) -> CallableBlock<LocalValue?> where Value == Wrapped? {
       CallableBlock<LocalValue?>(
         configurator: _block.configurator,
-        keyPath: _block.keyPath.appending(path: FunctionalKeyPath(keyPath).optional())
+        keyPath: _block.keyPath.appending(
+          path: FunctionalKeyPath(keyPath).optional()
+        )
       )
     }
 
@@ -216,7 +229,10 @@ extension Configurator {
     ) -> Configurator where Value: AnyObject {
       configurator.appendingConfiguration { base in
         keyPath.embed(
-          _modification(of: keyPath.extract(from: base), with: configuration),
+          _modification(
+            of: keyPath.extract(from: base),
+            with: configuration
+          ),
           in: base
         )
       }
@@ -226,7 +242,9 @@ extension Configurator {
       _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
     ) -> Configurator where Wrapped: AnyObject, Value == Wrapped? {
       configurator.appendingConfiguration { base in
-        guard let value = keyPath.extract(from: base) else { return base }
+        guard let value = keyPath.extract(from: base)
+        else { return base }
+
         return keyPath.embed(
           _modification(of: value, with: configuration),
           in: base

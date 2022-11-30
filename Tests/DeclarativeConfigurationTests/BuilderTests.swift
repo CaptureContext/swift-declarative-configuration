@@ -91,17 +91,16 @@ final class BuilderTests: XCTestCase {
 
     let initial = Container()
     let actual = Container().builder
-      .content.scope {
-        $0
-          .a(1)
-          .b(2)
-          .c(3)
-          .innerClass
-          .ifLetScope {
-            $0
-              .value(1)
-          }
-      }.build()
+      .content.scope { $0
+        .a(1)
+        .b(2)
+        .c(3)
+        .innerClass
+        .ifLetScope { $0
+          .value(1)
+        }
+      }
+      .build()
 
     XCTAssertNotEqual(actual.content.a, initial.content.a)
     XCTAssertNotEqual(actual.content.b, initial.content.b)

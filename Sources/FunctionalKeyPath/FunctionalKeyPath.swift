@@ -13,7 +13,10 @@ public struct FunctionalKeyPath<Root, Value> {
   /// - Parameters:
   ///   - embed: A function that always succeeds in embedding a value in a root.
   ///   - extract: A function that can optionally fail in extracting a value from a root.
-  public init(embed: @escaping (Value, Root) -> Root, extract: @escaping (Root) -> Value) {
+  public init(
+    embed: @escaping (Value, Root) -> Root,
+    extract: @escaping (Root) -> Value
+  ) {
     self._embed = embed
     self._extract = extract
   }
