@@ -67,14 +67,14 @@ let package = Package(
     .target(
       name: "FunctionalKeyPath",
       dependencies: [
-        .target(name: "FunctionalModification")
+        .target(name: "FunctionalModification"),
       ]
     ),
     .target(name: "FunctionalModification"),
     .testTarget(
       name: "DeclarativeConfigurationTests",
       dependencies: [
-        .target(name: "DeclarativeConfiguration")
+        .target(name: "DeclarativeConfiguration"),
       ]
     ),
   ]

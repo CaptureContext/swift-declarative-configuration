@@ -4,7 +4,7 @@
 @propertyWrapper
 public class DataSource<Input, Output> {
   public struct Container {
-    internal var action: ((Input) -> Output)
+    internal var action: (Input) -> Output
 
     public init(action: @escaping (Input) -> Output) {
       self.action = action

@@ -47,8 +47,8 @@ public struct FunctionalKeyPath<Root, Value> {
   @inlinable
   public static func getonly(_ keyPath: KeyPath<Root, Value>) -> FunctionalKeyPath {
     FunctionalKeyPath(
-      embed: { value, root in
-        return root
+      embed: { _, root in
+        root
       },
       extract: { root in
         root[keyPath: keyPath]
@@ -77,7 +77,7 @@ public struct FunctionalKeyPath<Root, Value> {
   /// - Parameter value: A value to embed.
   /// - Returns: A root that embeds `value`.
   public func embed(_ value: Value, in root: Root) -> Root {
-    self._embed(value, root)
+    _embed(value, root)
   }
 
   /// Returns a root by embedding a value.
@@ -86,7 +86,7 @@ public struct FunctionalKeyPath<Root, Value> {
   ///
   /// - Parameter value: A value to embed.
   public func embed(_ value: Value, in root: inout Root) {
-    root = self.embed(value, in: root)
+    root = embed(value, in: root)
   }
 
   /// Attempts to extract a value from a root.
@@ -94,7 +94,7 @@ public struct FunctionalKeyPath<Root, Value> {
   /// - Parameter root: A root to extract from.
   /// - Returns: A value iff it can be extracted from the given root, otherwise `nil`.
   public func extract(from root: Root) -> Value {
-    self._extract(root)
+    _extract(root)
   }
 
   /// Returns a new functional keyPath created by appending the given functional keyPath to this one.
@@ -143,7 +143,8 @@ extension FunctionalKeyPath {
   public static func key<Key: Hashable, _Value>(
     _ key: Key
   ) -> FunctionalKeyPath
-  where Root == [Key: _Value], Value == _Value? {
+    where Root == [Key: _Value], Value == _Value?
+  {
     FunctionalKeyPath(
       embed: { value, root in
         modification(of: root) { $0[key] = value }
@@ -153,7 +154,8 @@ extension FunctionalKeyPath {
   }
 
   public static func index(_ index: Root.Index) -> FunctionalKeyPath
-  where Root: MutableCollection, Value == Root.Element {
+    where Root: MutableCollection, Value == Root.Element
+  {
     FunctionalKeyPath(
       embed: { value, root in
         modification(of: root) { root in
@@ -167,15 +169,17 @@ extension FunctionalKeyPath {
   }
 
   public static func getonlyIndex(_ index: Root.Index) -> FunctionalKeyPath
-  where Root: Collection, Value == Root.Element {
+    where Root: Collection, Value == Root.Element
+  {
     FunctionalKeyPath(
-      embed: { _, root in return root },
+      embed: { _, root in root },
       extract: { $0[index] }
     )
   }
 
   public static func safeIndex(_ index: Root.Index) -> FunctionalKeyPath<Root, Value?>
-  where Root == [Value] {
+    where Root == [Value]
+  {
     FunctionalKeyPath<Root, Value?>(
       embed: { value, root in
         modification(of: root) { root in
@@ -187,7 +191,7 @@ extension FunctionalKeyPath {
         }
       },
       extract: { root in
-        return root.indices.contains(index)
+        root.indices.contains(index)
           ? root[index]
           : nil
       }

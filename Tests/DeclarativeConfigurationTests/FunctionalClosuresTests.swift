@@ -7,10 +7,10 @@ final class FunctionalClosuresTests: XCTestCase {
   func testBasicUsage() {
     class Object: NSObject {
       @DataSource<(Int, Int), Int>
-      var sum = .init { $0 + $1 }  // You can specify default handler
+      var sum = .init { $0 + $1 } // You can specify default handler
 
       @Handler<Int>
-      var handleSumResult  // or leave it nil
+      var handleSumResult // or leave it nil
 
       func sumOf(_ a: Int, _ b: Int) -> Int? {
         let result = _sum((a, b))
@@ -25,7 +25,7 @@ final class FunctionalClosuresTests: XCTestCase {
     let a = 10
     let b = 20
     let c = 30
-    var storageForHandler: Int? = nil
+    var storageForHandler: Int?
 
     object.handleSumResult { int in
       storageForHandler = int
@@ -52,10 +52,10 @@ final class FunctionalClosuresTests: XCTestCase {
   func testUsageWithBuilder() {
     final class Object: ConfigInitializable {
       @DataSource<(Int, Int), Int>
-      var sum = .init { $0 + $1 }  // You can specify default handler
+      var sum = .init { $0 + $1 } // You can specify default handler
 
       @Handler3<Int, Int, Int>
-      var handleSum  // or leave it nil
+      var handleSum // or leave it nil
 
       init() {}
 

@@ -9,7 +9,7 @@ public struct Configurator<Base> {
   ///
   /// Newly created configurator has no modification set up.
   /// So it's `configure` function does not modify input
-  public init() { _configure = { $0 } }
+  public init() { self._configure = { $0 } }
 
   /// Creates a configurator with a configuration function
   ///
@@ -122,7 +122,6 @@ public struct Configurator<Base> {
   public static func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
     Configurator().set(transform)
   }
-
 }
 
 extension Configurator {

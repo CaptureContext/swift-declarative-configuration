@@ -77,8 +77,8 @@ public struct Builder<Base> {
     _ initialValue: @escaping () -> Base,
     _ configurator: Configurator<Base>
   ) {
-    _initialValue = initialValue
-    _configurator = configurator
+    self._initialValue = initialValue
+    self._configurator = configurator
   }
 
   /// Appends transformation to current configuration
@@ -126,7 +126,6 @@ public struct Builder<Base> {
       keyPath: FunctionalKeyPath.getonly(keyPath).optional()
     )
   }
-
 }
 
 extension Builder {

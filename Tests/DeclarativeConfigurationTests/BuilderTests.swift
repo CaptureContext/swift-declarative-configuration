@@ -73,7 +73,7 @@ final class BuilderTests: XCTestCase {
         var b: Int = 0
         var c: Int = 0
         let innerClass: InnerClass? = nil
-        var innerStruct: InnerStruct? = nil
+        var innerStruct: InnerStruct?
 
         init() {}
       }

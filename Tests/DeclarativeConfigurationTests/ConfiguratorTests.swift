@@ -21,7 +21,7 @@ final class ConfiguratorTests: XCTestCase {
 
     let configurator =
       wrappedConfiguator
-      .combined(with: valueConfigurator)
+        .combined(with: valueConfigurator)
 
     let initial = TestConfigurable()
     let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
@@ -99,7 +99,7 @@ final class ConfiguratorTests: XCTestCase {
     struct TestConfigurable: CustomConfigurable {
       internal init(value: Bool = false, wrappedValue: Int = 0) {
         self.value = value
-        self.wrapped?.value = wrappedValue
+        wrapped?.value = wrappedValue
       }
 
       class Wrapped: NSObject {
@@ -108,7 +108,7 @@ final class ConfiguratorTests: XCTestCase {
       }
 
       var value = false
-      let _wrapped: Wrapped = Wrapped()
+      let _wrapped: Wrapped = .init()
       var wrapped: Wrapped? { _wrapped }
     }
 
@@ -141,7 +141,7 @@ final class ConfiguratorTests: XCTestCase {
         var b: Int = 0
         var c: Int = 0
         let innerClass: InnerClass? = nil
-        var innerStruct: InnerStruct? = nil
+        var innerStruct: InnerStruct?
 
         init() {}
       }

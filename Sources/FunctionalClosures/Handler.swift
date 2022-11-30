@@ -20,12 +20,12 @@ public class Handler<Input> {
       *,
       deprecated,
       message:
-        """
-        This API will be removed, \
-        consider using redeclaration with `(Input) -> Output` signature function. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """
+      """
+      This API will be removed, \
+      consider using redeclaration with `(Input) -> Output` signature function. \
+      Feel free to discuss the API here \
+      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      """
     )
     public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((Input) -> Void)?)
     {
@@ -100,12 +100,12 @@ public class Handler2<T0, T1> {
       *,
       deprecated,
       message:
-        """
-        This API will be removed, \
-        consider using redeclaration with `(Input) -> Output` signature function. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """
+      """
+      This API will be removed, \
+      consider using redeclaration with `(Input) -> Output` signature function. \
+      Feel free to discuss the API here \
+      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      """
     )
     public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((T0, T1) -> Void)?)
     {
@@ -174,12 +174,12 @@ public class Handler3<T0, T1, T2> {
       *,
       deprecated,
       message:
-        """
-        This API will be removed, \
-        consider using redeclaration with `(Input) -> Output` signature function. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """
+      """
+      This API will be removed, \
+      consider using redeclaration with `(Input) -> Output` signature function. \
+      Feel free to discuss the API here \
+      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      """
     )
     public mutating func callAsFunction(
       _ behaviour: Behaviour,
@@ -250,12 +250,12 @@ public class Handler4<T0, T1, T2, T3> {
       *,
       deprecated,
       message:
-        """
-        This API will be removed, \
-        consider using redeclaration with `(Input) -> Output` signature function. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """
+      """
+      This API will be removed, \
+      consider using redeclaration with `(Input) -> Output` signature function. \
+      Feel free to discuss the API here \
+      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      """
     )
     public mutating func callAsFunction(
       _ behaviour: Behaviour,
@@ -326,12 +326,12 @@ public class Handler5<T0, T1, T2, T3, T4> {
       *,
       deprecated,
       message:
-        """
-        This API will be removed, \
-        consider using redeclaration with `(Input) -> Output` signature function. \
-        Feel free to discuss the API here \
-        https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
-        """
+      """
+      This API will be removed, \
+      consider using redeclaration with `(Input) -> Output` signature function. \
+      Feel free to discuss the API here \
+      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      """
     )
     public mutating func callAsFunction(
       _ behaviour: Behaviour,
