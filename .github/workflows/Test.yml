@@ -9,9 +9,9 @@ on:
 jobs:
   test_macos:
     if: |
-      !startsWith(github.event.head_commit.message, '[ci skip]') &&
-      !startsWith(github.event.head_commit.message, '[ci skip test]') &&
-      !startsWith(github.event.head_commit.message, '[ci skip test_macos]')
+      !contains(github.event.head_commit.message, '[ci skip]') &&
+      !contains(github.event.head_commit.message, '[ci skip test]') &&
+      !contains(github.event.head_commit.message, '[ci skip test_macos]')
     runs-on: macOS-12
     timeout-minutes: 30
     steps:
