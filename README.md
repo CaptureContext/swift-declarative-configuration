@@ -8,7 +8,7 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
 - **[FunctionalModification](./Sources/FunctionalModification)**
 
-  Provides modification functions for copying and modifying immutable stuff. It is useful for self-configuring objects like builder, when modificating methods should return modified `self`
+  Provides modification functions for copying and modifying immutable stuff. It is useful for self-configuring objects like builder, when modifying methods should return modified `self`.
 
 - **[FunctionalKeyPath](./Sources/FunctionalKeyPath)**
 
@@ -16,7 +16,7 @@ Swift Declarative Configuration (SDC, for short) is a tiny library, that enables
 
 - **[FunctionalConfigurator](./Sources/FunctionalConfigurator)**
 
-  Funtional configurator for anything, enables you to specify modification of an object and to apply the modification later.
+  Functional configurator for anything, enables you to specify modification of an object and to apply the modification later.
 
   Also contains self-implementing protocols (`ConfigInitializable`,  `CustomConfigurable`) to enable you add custom configuration support for your types (`NSObject` already conforms to it for you).
 
