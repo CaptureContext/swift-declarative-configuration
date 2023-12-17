@@ -2,6 +2,11 @@
 ///
 /// Returns a new instance for value types
 /// Returns modified reference for reference types
+@available(
+  *,
+  deprecated,
+  message: "use `reduce(_:with:)` instead."
+)
 @inlinable
 public func modification<Object>(
   of object: Object,

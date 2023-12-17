@@ -9,7 +9,7 @@ final class FunctionalClosuresTests: XCTestCase {
       @DataSource<(Int, Int), Int>
       var sum = .init { $0 + $1 } // You can specify default handler
 
-      @Handler<Int>
+      @Handler1<Int>
       var handleSumResult // or leave it nil
 
       func sumOf(_ a: Int, _ b: Int) -> Int? {

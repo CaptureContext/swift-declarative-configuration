@@ -1,9 +1,20 @@
+public enum HandlerContainerBehaviour {
+  case resetting
+  case preceding
+  case appending
+}
+
+public typealias Handler = Handler1
+
 /// A wrapper for clusure-based interaction between objects
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
 @propertyWrapper
-public class Handler<Input> {
+public class Handler1<Input> {
   public struct Container {
+    public typealias Behaviour = HandlerContainerBehaviour
+
+    @usableFromInline
     internal var action: ((Input) -> Void)?
 
     internal init() {}
@@ -12,6 +23,7 @@ public class Handler<Input> {
       self.action = action
     }
 
+    @inlinable
     public mutating func callAsFunction(perform action: ((Input) -> Void)?) {
       self.action = action
     }
@@ -24,9 +36,10 @@ public class Handler<Input> {
       This API will be removed, \
       consider using redeclaration with `(Input) -> Output` signature function. \
       Feel free to discuss the API here \
-      https://github.com/MakeupStudio/swift-declarative-configuration/issues/1
+      https://github.com/CaptureContext/swift-declarative-configuration/issues/1
       """
     )
+    @inlinable
     public mutating func callAsFunction(_ behaviour: Behaviour, perform action: ((Input) -> Void)?)
     {
       switch behaviour {
@@ -45,12 +58,6 @@ public class Handler<Input> {
           oldAction?(input)
         }
       }
-    }
-
-    public enum Behaviour {
-      case resetting
-      case preceding
-      case appending
     }
   }
 
@@ -84,6 +91,8 @@ public class Handler<Input> {
 @propertyWrapper
 public class Handler2<T0, T1> {
   public struct Container {
+    public typealias Behaviour = HandlerContainerBehaviour
+
     internal var action: ((T0, T1) -> Void)?
 
     internal init() {}
@@ -126,12 +135,6 @@ public class Handler2<T0, T1> {
         }
       }
     }
-
-    public enum Behaviour {
-      case resetting
-      case preceding
-      case appending
-    }
   }
 
   public init() {}
@@ -158,6 +161,8 @@ public class Handler2<T0, T1> {
 @propertyWrapper
 public class Handler3<T0, T1, T2> {
   public struct Container {
+    public typealias Behaviour = HandlerContainerBehaviour
+
     internal var action: ((T0, T1, T2) -> Void)?
 
     internal init() {}
@@ -202,12 +207,6 @@ public class Handler3<T0, T1, T2> {
         }
       }
     }
-
-    public enum Behaviour {
-      case resetting
-      case preceding
-      case appending
-    }
   }
 
   public init() {}
@@ -234,6 +233,8 @@ public class Handler3<T0, T1, T2> {
 @propertyWrapper
 public class Handler4<T0, T1, T2, T3> {
   public struct Container {
+    public typealias Behaviour = HandlerContainerBehaviour
+
     internal var action: ((T0, T1, T2, T3) -> Void)?
 
     internal init() {}
@@ -278,12 +279,6 @@ public class Handler4<T0, T1, T2, T3> {
         }
       }
     }
-
-    public enum Behaviour {
-      case resetting
-      case preceding
-      case appending
-    }
   }
 
   public init() {}
@@ -310,6 +305,8 @@ public class Handler4<T0, T1, T2, T3> {
 @propertyWrapper
 public class Handler5<T0, T1, T2, T3, T4> {
   public struct Container {
+    public typealias Behaviour = HandlerContainerBehaviour
+
     internal var action: ((T0, T1, T2, T3, T4) -> Void)?
 
     internal init() {}
@@ -353,12 +350,6 @@ public class Handler5<T0, T1, T2, T3, T4> {
           oldAction?(t0, t1, t2, t3, t4)
         }
       }
-    }
-
-    public enum Behaviour {
-      case resetting
-      case preceding
-      case appending
     }
   }
 

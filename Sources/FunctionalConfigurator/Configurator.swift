@@ -3,7 +3,8 @@ import FunctionalModification
 
 @dynamicMemberLookup
 public struct Configurator<Base> {
-  private var _configure: (Base) -> Base
+  @usableFromInline
+  internal var _configure: (Base) -> Base
 
   /// Creates a new instance of configurator
   ///
@@ -14,16 +15,19 @@ public struct Configurator<Base> {
   /// Creates a configurator with a configuration function
   ///
   /// Initial value passed to configuration function is an empty configurator
+  @inlinable
   public init(config configuration: (Configurator) -> Configurator) {
     self = configuration(.init())
   }
 
   /// Modifies an object with specified configuration
+  @inlinable
   public func configure(_ base: inout Base) {
     _ = _configure(base)
   }
 
   /// Modifies a reference-type object with specified configuration
+  @inlinable
   public func configure(_ base: Base) where Base: AnyObject {
     _ = _configure(base)
   }
@@ -31,34 +35,40 @@ public struct Configurator<Base> {
   /// Modifies returns modified object
   ///
   /// Note: for reference types it is usually the same object
+  @inlinable
   public func configured(_ base: Base) -> Base {
     _configure(base)
   }
 
   /// Appends modification of stored object to stored configuration
+  @inlinable
   public func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
     appendingConfiguration { base in
-      modification(of: _configure(base), with: transform)
+      reduce(_configure(base), with: transform)
     }
   }
 
+  @inlinable
   public func combined(with configurator: Configurator) -> Configurator {
     appendingConfiguration(configurator._configure)
   }
 
   /// Appends modification of a new configurator to stored configuration
   @available(*, deprecated, message: "Use `combined(with:) instead`")
+  @inlinable
   public func appending(_ configurator: Configurator) -> Configurator {
     appendingConfiguration(configurator._configure)
   }
 
   /// Appends configuration to stored configuration
+  @inlinable
   public func appendingConfiguration(_ configuration: @escaping (Base) -> Base) -> Configurator {
-    modification(of: self) { _self in
+    reduce(self) { _self in
       _self._configure = { configuration(_configure($0)) }
     }
   }
 
+  @inlinable
   public subscript<Value>(
     dynamicMember keyPath: WritableKeyPath<Base, Value>
   ) -> CallableBlock<Value> {
@@ -68,6 +78,7 @@ public struct Configurator<Base> {
     )
   }
 
+  @inlinable
   public subscript<Value>(
     dynamicMember keyPath: KeyPath<Base, Value>
   ) -> NonCallableBlock<Value> {
@@ -77,6 +88,7 @@ public struct Configurator<Base> {
     )
   }
 
+  @inlinable
   public subscript<Wrapped, Value>(
     dynamicMember keyPath: WritableKeyPath<Wrapped, Value>
   ) -> CallableBlock<Value?> where Base == Wrapped? {
@@ -86,6 +98,7 @@ public struct Configurator<Base> {
     )
   }
 
+  @inlinable
   public subscript<Wrapped, Value>(
     dynamicMember keyPath: KeyPath<Wrapped, Value>
   ) -> NonCallableBlock<Value?> where Base == Wrapped? {
@@ -95,30 +108,35 @@ public struct Configurator<Base> {
     )
   }
 
+  @inlinable
   public static subscript<Value>(
     dynamicMember keyPath: WritableKeyPath<Base, Value>
   ) -> CallableBlock<Value> {
     Configurator()[dynamicMember: keyPath]
   }
 
+  @inlinable
   public static subscript<Value>(
     dynamicMember keyPath: KeyPath<Base, Value>
   ) -> NonCallableBlock<Value> {
     Configurator()[dynamicMember: keyPath]
   }
 
+  @inlinable
   public static subscript<Wrapped, Value>(
     dynamicMember keyPath: WritableKeyPath<Wrapped, Value>
   ) -> CallableBlock<Value?> where Base == Wrapped? {
     Configurator()[dynamicMember: keyPath]
   }
 
+  @inlinable
   public static subscript<Wrapped, Value>(
     dynamicMember keyPath: KeyPath<Wrapped, Value>
   ) -> NonCallableBlock<Value?> where Base == Wrapped? {
     Configurator()[dynamicMember: keyPath]
   }
 
+  @inlinable
   public static func set(_ transform: @escaping (inout Base) -> Void) -> Configurator {
     Configurator().set(transform)
   }
@@ -127,9 +145,11 @@ public struct Configurator<Base> {
 extension Configurator {
   @dynamicMemberLookup
   public struct CallableBlock<Value> {
-    var _block: NonCallableBlock<Value>
+    @usableFromInline
+    internal var _block: NonCallableBlock<Value>
 
-    init(
+    @usableFromInline
+    internal init(
       configurator: Configurator,
       keyPath: FunctionalKeyPath<Base, Value>
     ) {
@@ -139,17 +159,19 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public func callAsFunction(_ value: Value) -> Configurator {
       _block.configurator.appendingConfiguration {
         _block.keyPath.embed(value, in: $0)
       }
     }
 
+    @inlinable
     public func set(_ transform: @escaping (inout Value) -> Void) -> Configurator {
       _block.configurator.appendingConfiguration { base in
         _block.keyPath.embed(
-          modification(
-            of: _block.keyPath.extract(from: base),
+          reduce(
+            _block.keyPath.extract(from: base),
             with: transform
           ),
           in: base
@@ -157,13 +179,14 @@ extension Configurator {
       }
     }
 
+    @inlinable
     public func scope(
       _ configuration: @escaping (Configurator<Value>) -> Configurator<Value>
     ) -> Configurator {
       _block.configurator.appendingConfiguration { base in
         _block.keyPath.embed(
-          _modification(
-            of: _block.keyPath.extract(from: base),
+          reduce(
+            _block.keyPath.extract(from: base),
             with: configuration
           ),
           in: base
@@ -171,6 +194,7 @@ extension Configurator {
       }
     }
 
+    @inlinable
     public func ifLetScope<Wrapped>(
       _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
     ) -> Configurator where Value == Wrapped? {
@@ -179,12 +203,13 @@ extension Configurator {
         else { return base }
 
         return _block.keyPath.embed(
-          _modification(of: value, with: configuration),
+          reduce(value, with: configuration),
           in: base
         )
       }
     }
 
+    @inlinable
     public subscript<LocalValue>(
       dynamicMember keyPath: WritableKeyPath<Value, LocalValue>
     ) -> CallableBlock<LocalValue> {
@@ -195,12 +220,14 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public subscript<LocalValue>(
       dynamicMember keyPath: KeyPath<Value, LocalValue>
     ) -> NonCallableBlock<LocalValue> {
       _block[dynamicMember: keyPath]
     }
 
+    @inlinable
     public subscript<Wrapped, LocalValue>(
       dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
     ) -> CallableBlock<LocalValue?> where Value == Wrapped? {
@@ -212,6 +239,7 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public subscript<Wrapped, LocalValue>(
       dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
     ) -> NonCallableBlock<LocalValue?> where Value == Wrapped? {
@@ -221,16 +249,29 @@ extension Configurator {
 
   @dynamicMemberLookup
   public struct NonCallableBlock<Value> {
-    var configurator: Configurator
-    var keyPath: FunctionalKeyPath<Base, Value>
+    @usableFromInline
+    internal var configurator: Configurator
 
+    @usableFromInline
+    internal var keyPath: FunctionalKeyPath<Base, Value>
+
+    @usableFromInline
+    internal init(
+      configurator: Configurator,
+      keyPath: FunctionalKeyPath<Base, Value>
+    ) {
+      self.configurator = configurator
+      self.keyPath = keyPath
+    }
+
+    @inlinable
     public func scope(
       _ configuration: @escaping (Configurator<Value>) -> Configurator<Value>
     ) -> Configurator where Value: AnyObject {
       configurator.appendingConfiguration { base in
         keyPath.embed(
-          _modification(
-            of: keyPath.extract(from: base),
+          reduce(
+            keyPath.extract(from: base),
             with: configuration
           ),
           in: base
@@ -238,6 +279,7 @@ extension Configurator {
       }
     }
 
+    @inlinable
     public func ifLetScope<Wrapped>(
       _ configuration: @escaping (Configurator<Wrapped>) -> Configurator<Wrapped>
     ) -> Configurator where Wrapped: AnyObject, Value == Wrapped? {
@@ -246,12 +288,13 @@ extension Configurator {
         else { return base }
 
         return keyPath.embed(
-          _modification(of: value, with: configuration),
+          reduce(value, with: configuration),
           in: base
         )
       }
     }
 
+    @inlinable
     public subscript<LocalValue>(
       dynamicMember keyPath: ReferenceWritableKeyPath<Value, LocalValue>
     ) -> CallableBlock<LocalValue> {
@@ -261,6 +304,7 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public subscript<LocalValue>(
       dynamicMember keyPath: KeyPath<Value, LocalValue>
     ) -> NonCallableBlock<LocalValue> {
@@ -270,6 +314,7 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public subscript<Wrapped, LocalValue>(
       dynamicMember keyPath: ReferenceWritableKeyPath<Wrapped, LocalValue>
     ) -> CallableBlock<LocalValue?> where Value == Wrapped? {
@@ -279,6 +324,7 @@ extension Configurator {
       )
     }
 
+    @inlinable
     public subscript<Wrapped, LocalValue>(
       dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
     ) -> NonCallableBlock<LocalValue?> where Value == Wrapped? {

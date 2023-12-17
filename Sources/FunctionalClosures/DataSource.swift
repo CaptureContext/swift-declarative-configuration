@@ -4,12 +4,14 @@
 @propertyWrapper
 public class DataSource<Input, Output> {
   public struct Container {
+    @usableFromInline
     internal var action: (Input) -> Output
 
     public init(action: @escaping (Input) -> Output) {
       self.action = action
     }
 
+    @inlinable
     public mutating func callAsFunction(perform action: @escaping (Input) -> Output) {
       self.action = action
     }
@@ -21,15 +23,18 @@ public class DataSource<Input, Output> {
 
   public var wrappedValue: Container
 
+  @inlinable
   public var projectedValue: (Input) -> Output {
     get { wrappedValue.action }
     set { wrappedValue.action = newValue }
   }
 
+  @inlinable
   public func callAsFunction(_ input: Input) -> Output? {
     projectedValue(input)
   }
 
+  @inlinable
   public func callAsFunction() -> Output where Input == Void {
     projectedValue(())
   }
@@ -41,6 +46,7 @@ public class DataSource<Input, Output> {
 @propertyWrapper
 public class OptionalDataSource<Input, Output> {
   public struct Container {
+    @usableFromInline
     internal var action: ((Input) -> Output)?
 
     internal init() {}
@@ -49,6 +55,7 @@ public class OptionalDataSource<Input, Output> {
       self.action = action
     }
 
+    @inlinable
     public mutating func callAsFunction(perform action: ((Input) -> Output)?) {
       self.action = action
     }
@@ -62,15 +69,18 @@ public class OptionalDataSource<Input, Output> {
 
   public var wrappedValue: Container = .init()
 
+  @inlinable
   public var projectedValue: ((Input) -> Output)? {
     get { wrappedValue.action }
     set { wrappedValue.action = newValue }
   }
 
+  @inlinable
   public func callAsFunction(_ input: Input) -> Output? {
     projectedValue?(input)
   }
 
+  @inlinable
   public func callAsFunction() -> Output? where Input == Void {
     projectedValue?(())
   }

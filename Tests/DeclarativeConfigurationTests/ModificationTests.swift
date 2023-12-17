@@ -7,7 +7,7 @@ final class ModificationTests: XCTestCase {
     struct _Test { var value = 0 }
     let initial = _Test(value: 0)
     let expected = _Test(value: 1)
-    let actual = modification(of: initial) { $0.value = expected.value }
+    let actual = reduce(initial) { $0.value = expected.value }
     XCTAssertNotEqual(initial.value, expected.value)
     XCTAssertEqual(actual.value, expected.value)
   }
@@ -16,7 +16,7 @@ final class ModificationTests: XCTestCase {
     struct _Test { var value = 0 }
     let initial = _Test(value: 0)
     let expected = _Test(value: 1)
-    let actual = modification(of: initial) { $0 = expected }
+    let actual = reduce(initial) { $0 = expected }
     XCTAssertNotEqual(initial.value, expected.value)
     XCTAssertEqual(actual.value, expected.value)
   }
@@ -30,7 +30,7 @@ final class ModificationTests: XCTestCase {
       return test
     }()
 
-    let actual = modification(of: initial) { $0.value = expected.value }
+    let actual = reduce(initial) { $0.value = expected.value }
     XCTAssertEqual(ObjectIdentifier(actual), ObjectIdentifier(initial))
     XCTAssertEqual(actual.value, expected.value)
   }
@@ -44,7 +44,7 @@ final class ModificationTests: XCTestCase {
       return test
     }()
 
-    let actual = modification(of: initial) { $0 = expected }
+    let actual = reduce(initial) { $0 = expected }
     XCTAssertNotEqual(ObjectIdentifier(initial), ObjectIdentifier(expected))
     XCTAssertEqual(ObjectIdentifier(actual), ObjectIdentifier(expected))
   }
