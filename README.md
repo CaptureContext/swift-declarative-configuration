@@ -99,6 +99,24 @@ class ImageViewController: UIViewController {
 }
 ```
 
+### FunctionalModification
+
+- `reduce(_:with:)`:
+
+  ```swift
+  struct CounterState {
+    var value: Int = 0
+  }
+  
+  let state = CounterState()
+  let newState = reduce(state) {
+    // $0 is a mutable copy of the first argument
+    // mutated object is returned
+    $0.value += 1
+  }
+  ```
+
+
 ### FunctionalClosures
 
 ### No SDC
@@ -149,7 +167,7 @@ tapRecognizer.onTapGesture?(tapRecognizer)
 
 ```swift
 public class TapGestureRecognizer: UITapGestureRecognizer {
-  @Handler<TapGestureRecognizer>
+  @Handler1<TapGestureRecognizer>
   var onTapGesture
     
   init() {
@@ -199,6 +217,8 @@ let tapRecognizer = TapGestureRecognizer { $0
 }
 ```
 
+If your deployment target is iOS 17+ (or other platform with a corresponding version) you can use beta variadic generic `_Handler` type
+
 ### More
 
 #### Builder
@@ -228,8 +248,6 @@ let object = Object { $0
 }
 ```
 
-
-
 Conform your own types to `BuilderProvider` protocol to access builder property.
 
 ```swift
@@ -248,6 +266,8 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 
 `OptionalDataSource` and `DataSource` types are very similar to the `Handler`, but if `Handler<Input>` is kinda `OptionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
 
+If your deployment target is iOS 17+ (or other platform with a corresponding version) you can use beta variadic generic `_DataSource` type
+
 ## Installation
 
 ### Basic
@@ -255,7 +275,7 @@ extension CLLocationCoordinate2D: BuilderProvider {}
 You can add DeclarativeConfiguration to an Xcode project by adding it as a package dependency.
 
 1. From the **File** menu, select **Swift Packages › Add Package Dependency…**
-2. Enter [`"https://github.com/makeupstudio/swift-declarative-configuration"`](https://github.com/makeupstudio/swift-declarative-configuration) into the package repository URL text field
+2. Enter [`"https://github.com/capturecontext/swift-declarative-configuration"`](https://github.com/capturecontext/swift-declarative-configuration) into the package repository URL text field
 3. Choose products you need to link them to your project.
 
 ### Recommended
@@ -265,15 +285,16 @@ If you use SwiftPM for your project structure, add DeclarativeConfiguration to y
 ```swift
 .package(
   url: "git@github.com:capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor(from: "0.3.0")
+  .upToNextMinor(from: "0.4.0")
 )
 ```
+
 or via HTTPS
 
 ```swift
 .package(
   url: "https://github.com:capturecontext/swift-declarative-configuration.git", 
-  .exact("0.3.0")
+  .upToNextMinor("0.4.0")
 )
 ```
 
@@ -281,8 +302,8 @@ Do not forget about target dependencies:
 
 ```swift
 .product(
-    name: "DeclarativeConfiguration", 
-    package: "swift-declarative-configuration"
+  name: "DeclarativeConfiguration", 
+  package: "swift-declarative-configuration"
 )
 ```
 
