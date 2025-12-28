@@ -5,10 +5,10 @@
 ///   - Modified object for reference types
 @inlinable
 public func reduce<Value>(
-  _ value: Value,
-  with transform: (inout Value) -> Void
+	_ value: Value,
+	with transform: (inout Value) -> Void
 ) -> Value {
-  var _value = value
-  transform(&_value)
-  return _value
+	var _value = value
+	transform(&_value)
+	return _value
 }

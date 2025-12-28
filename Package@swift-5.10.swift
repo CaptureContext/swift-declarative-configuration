@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -43,9 +43,9 @@ let package = Package(
 	],
 	dependencies: [
 		.package(
-			url: "https://github.com/capturecontext/swift-keypaths-extensions",
-			.upToNextMinor(from: "0.0.1")
-		)
+			url: "https://github.com/pointfreeco/xctest-dynamic-overlay",
+			.upToNextMajor(from: "1.8.0")
+		),
 	],
 	targets: [
 		.target(
@@ -53,18 +53,14 @@ let package = Package(
 			dependencies: [
 				.target(name: "DeclarativeConfigurationCore"),
 				.target(name: "FunctionalClosures"),
+				.product(
+					name: "IssueReporting",
+					package: "xctest-dynamic-overlay"
+				)
 			]
 		),
 
-		.target(
-			name: "DeclarativeConfigurationCore",
-			dependencies: [
-				.product(
-					name: "KeyPathsExtensions",
-					package: "swift-keypaths-extensions"
-				),
-			]
-		),
+		.target(name: "DeclarativeConfigurationCore"),
 
 		.testTarget(
 			name: "DeclarativeConfigurationTests",
@@ -113,11 +109,7 @@ let package = Package(
 
 		.target(
 			name: "FunctionalModification",
-			dependencies: [
-				.target(name: "DeclarativeConfigurationCore"),
-			],
 			path: "Sources/Deprecated/FunctionalModification"
 		),
-	],
-	swiftLanguageModes: [.v6]
+	]
 )
