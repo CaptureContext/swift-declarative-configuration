@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  xcodebuild-latest:
+    name: xcodebuild
+    if: |
+      !contains(github.event.head_commit.message, '[ci skip]') &&
+      !contains(github.event.head_commit.message, '[ci skip test]')
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: ['16.2']
+        platform: [iOS, macOS, macCatalyst, tvOS, visionOS, watchOS]
+        command: [test, '']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Debug
+        uses: capturecontext/swift-package-action@2.0
+        with:
+          xcode: ${{ matrix.xcode }}
+          cache-derived-data: true
+          command: xcodebuild
+          subcommand: ${{ matrix.command }}
+          platform: ${{ matrix.platform }}
+          workspace: /package.xcworkspace
+          scheme: ComposableArchitecture
+          config: Debug
