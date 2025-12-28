@@ -1,117 +1,197 @@
-import XCTest
+import Testing
+@testable import DeclarativeConfiguration
 
-@testable import FunctionalBuilder
+@Suite("BuilderTests")
+struct BuilderTests {
+	@Suite("ValueTypes")
+	struct ValueTypes {
+		struct Mock: BuilderProvider, Equatable {
+			struct Nested: Equatable {
+				var intValue: Int
+				var optionalIntValue: Int?
 
-final class BuilderTests: XCTestCase {
-  func testBuilder() {
-    struct TestBuildable: Equatable {
-      struct Wrapped: Equatable {
-        var value = 0
-      }
+				init(
+					intValue: Int = 0,
+					optionalIntValue: Int? = nil
+				) {
+					self.intValue = intValue
+					self.optionalIntValue = optionalIntValue
+				}
+			}
 
-      var value = false
-      var wrapped = Wrapped()
-    }
+			var value: Int
+			var nested: Nested
+			var optionalNested: Nested?
 
-    let expected: TestBuildable = {
-      var test = TestBuildable()
-      test.value = true
-      test.wrapped.value = 1
-      return test
-    }()
+			init(
+				value: Int = 0,
+				nested: Nested = .init(),
+				optionalNested: Nested? = nil
+			) {
+				self.value = value
+				self.nested = nested
+				self.optionalNested = optionalNested
+			}
+		}
 
-    let actual = Builder(TestBuildable())
-      .wrapped.value(1)
-      .value(true)
-      .build()
+		@Test
+		func build() async throws {
+			let initialValue = Mock()
 
-    XCTAssertNotEqual(actual, TestBuildable())
-    XCTAssertEqual(actual, expected)
-  }
+			let actualValue = initialValue.builder
+				.value(1)
+				.nested.intValue(1)
+				.nested.scope { $0
+					.optionalIntValue.ifLet(1) // not set
+				}
+				.optionalNested.ifLet(else: .init()).scope { $0
+					.intValue(1)
+					.optionalIntValue.ifNil(1)
+					.optionalIntValue.ifNil(2) // not set
+				}
+				.build()
 
-  func testReinforce() {
-    struct TestBuildable: Equatable {
-      struct Wrapped: Equatable {
-        var value = 0
-      }
+			let expectedValue = Mock(
+				value: 1,
+				nested: .init(intValue: 1),
+				optionalNested: .init(intValue: 1, optionalIntValue: 1)
+			)
 
-      var value = false
-      var wrapped = Wrapped()
-    }
+			#expect(actualValue == expectedValue)
+		}
 
-    let expected: TestBuildable = {
-      var test = TestBuildable()
-      test.wrapped.value = 1
-      return test
-    }()
 
-    var flag = false
+		@Test
+		func commit() async throws {
+			let initialValue = Mock()
 
-    _ = Builder(TestBuildable())
-      .wrapped.value(1)
-      .reinforce { actual in
-        flag = true
-        XCTAssertNotEqual(actual, TestBuildable())
-        XCTAssertEqual(actual, expected)
-      }
+			let builder = initialValue.builder.value(1)
+			let baseBeforeCommit = builder.base
+			let baseAfterCommit = builder.commit().base
 
-    XCTAssertEqual(flag, false, "Reinforce transform wasn't called")
-  }
+			#expect(baseBeforeCommit == initialValue)
+			#expect(baseAfterCommit == .init(value: 1))
+		}
 
-  func testScope() {
-    struct Container: BuilderProvider {
-      class Content {
-        class InnerClass {
-          var value: Int = 0
-        }
+		@Test
+		func combined() async throws {
+			let initialValue: Mock = .init()
 
-        struct InnerStruct {
-          var value: Int = 0
-        }
+			let nestedConfig = Configurator<Mock>.value(1)
 
-        var a: Int = 0
-        var b: Int = 0
-        var c: Int = 0
-        let innerClass: InnerClass? = nil
-        var innerStruct: InnerStruct?
+			let actualValue = initialValue.builder
+				.combined(with: nestedConfig)
+				.build()
 
-        init() {}
-      }
+			#expect(actualValue == .init(value: 1))
+		}
+	}
 
-      let content: Content = .init()
-    }
+	@Suite("ReferenceTypes")
+	struct ReferenceTypes {
+		class Mock: BuilderProvider {
+			class Nested {
+				var intValue: Int
+				var optionalIntValue: Int?
 
-    let expected = Container().builder
-      .content.a(1)
-      .content.b(2)
-      .content.c(3)
-      .content.innerClass.value(1)
-      .content.innerStruct.value(1)
-      .build()
+				init(
+					intValue: Int = 0,
+					optionalIntValue: Int? = nil
+				) {
+					self.intValue = intValue
+					self.optionalIntValue = optionalIntValue
+				}
+			}
 
-    let initial = Container()
-    let actual = Container().builder
-      .content.scope { $0
-        .a(1)
-        .b(2)
-        .c(3)
-        .innerClass
-        .ifLetScope { $0
-          .value(1)
-        }
-      }
-      .build()
+			var value: Int
+			var nested: Nested
+			var optionalNested: Nested?
 
-    XCTAssertNotEqual(actual.content.a, initial.content.a)
-    XCTAssertNotEqual(actual.content.b, initial.content.b)
-    XCTAssertNotEqual(actual.content.c, initial.content.c)
-    XCTAssertEqual(actual.content.innerClass?.value, initial.content.innerClass?.value)
-    XCTAssertEqual(actual.content.innerStruct?.value, initial.content.innerStruct?.value)
+			init(
+				value: Int = 0,
+				nested: Nested = .init(),
+				optionalNested: Nested? = nil
+			) {
+				self.value = value
+				self.nested = nested
+				self.optionalNested = optionalNested
+			}
+		}
 
-    XCTAssertEqual(actual.content.a, expected.content.a)
-    XCTAssertEqual(actual.content.b, expected.content.b)
-    XCTAssertEqual(actual.content.c, expected.content.c)
-    XCTAssertEqual(actual.content.innerClass?.value, expected.content.innerClass?.value)
-    XCTAssertEqual(actual.content.innerStruct?.value, expected.content.innerStruct?.value)
-  }
+		@Test
+		func build() async throws {
+			let initialValue = Mock()
+
+			let actualValue = initialValue.builder
+				.value(1)
+				.nested.intValue(1)
+				.nested.scope { $0
+					.optionalIntValue.ifLet(1) // not set
+				}
+				.optionalNested.ifLet(else: .init()).scope { $0
+					.intValue(1)
+					.optionalIntValue.ifNil(1)
+					.optionalIntValue.ifNil(2) // not set
+				}
+				.build()
+
+			#expect(actualValue === initialValue)
+			#expect(actualValue.value == 1)
+			#expect(actualValue.nested.intValue == 1)
+			#expect(actualValue.nested.optionalIntValue == nil)
+			#expect(actualValue.optionalNested?.intValue == 1)
+			#expect(actualValue.optionalNested?.optionalIntValue == 1)
+		}
+
+		@Test
+		func apply() async throws {
+			let initialValue = Mock()
+
+			initialValue.builder
+				.value(1)
+				.nested.intValue(1)
+				.nested.scope { $0
+					.optionalIntValue.ifLet(1) // not set
+				}
+				.optionalNested.ifLet(else: .init()).scope { $0
+					.intValue(1)
+					.optionalIntValue.ifNil(1)
+					.optionalIntValue.ifNil(2) // not set
+				}
+				.apply()
+
+			#expect(initialValue.value == 1)
+			#expect(initialValue.nested.intValue == 1)
+			#expect(initialValue.nested.optionalIntValue == nil)
+			#expect(initialValue.optionalNested?.intValue == 1)
+			#expect(initialValue.optionalNested?.optionalIntValue == 1)
+		}
+
+		@Test
+		func commit() async throws {
+			let initialValue = Mock()
+
+			let builder = initialValue.builder.value(1)
+			let baseBeforeCommit = builder.base
+			let baseAfterCommit = builder.commit().base
+
+			#expect(baseBeforeCommit === initialValue)
+			#expect(baseAfterCommit === initialValue)
+			#expect(initialValue.value == 1)
+		}
+
+		@Test
+		func combined() async throws {
+			let initialValue: Mock = .init()
+
+			let nestedConfig = Configurator<Mock>.value(1)
+
+			let actualValue = initialValue.builder
+				.combined(with: nestedConfig)
+				.build()
+
+			#expect(actualValue === initialValue)
+			#expect(actualValue.value == 1)
+		}
+	}
 }
