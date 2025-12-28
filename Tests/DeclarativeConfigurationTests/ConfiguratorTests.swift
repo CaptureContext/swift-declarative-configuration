@@ -1,193 +1,268 @@
-import XCTest
+import Testing
+import Foundation
+@testable import DeclarativeConfiguration
 
-@testable import FunctionalConfigurator
+@Suite("ConfiguratorTests")
+struct ConfiguratorTests {
+	@Test
+	func basicChecks() {
+		struct TestConfigurable: Equatable {
+			struct Wrapped: Equatable {
+				var value = 0
+			}
 
-final class ConfiguratorTests: XCTestCase {
-  func testConfiguration() {
-    struct TestConfigurable: Equatable {
-      struct Wrapped: Equatable {
-        var value = 0
-      }
+			var value: Bool = false
+			var wrapped: Wrapped = .init()
+		}
 
-      var value = false
-      var wrapped = Wrapped()
-    }
+		let wrappedConfiguator = Configurator<TestConfigurable>()
+			.wrapped.value(1)
 
-    let wrappedConfiguator = Configurator<TestConfigurable>()
-      .wrapped.value(1)
+		let valueConfigurator = Configurator<TestConfigurable>()
+			.value(true)
 
-    let valueConfigurator = Configurator<TestConfigurable>()
-      .value(true)
+		let configurator = wrappedConfiguator
+			.combined(with: valueConfigurator)
 
-    let configurator =
-      wrappedConfiguator
-        .combined(with: valueConfigurator)
+		let initial = TestConfigurable()
 
-    let initial = TestConfigurable()
-    let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
-    let actual = configurator.configured(initial)
+		let expected = TestConfigurable(
+			value: true,
+			wrapped: .init(value: 1)
+		)
 
-    XCTAssertNotEqual(actual, initial)
-    XCTAssertEqual(actual, expected)
-  }
+		let actual = configurator.configured(initial)
 
-  func testConfigInitializable() {
-    final class TestConfigurable: NSObject {
-      override init() {
-        super.init()
-      }
+		#expect(actual != initial)
+		#expect(actual == expected)
+	}
 
-      init(value: Bool, wrapped: TestConfigurable.Wrapped) {
-        self.value = value
-        self.wrapped = wrapped
-      }
+	@Test
+	func configInitializableWithDesignatedInit() {
+		final class TestConfigurable: NSObject {
+			struct Wrapped: Equatable {
+				var value = 0
+			}
 
-      struct Wrapped: Equatable {
-        var value = 0
-      }
+			var value: Bool
+			var wrapped: Wrapped
 
-      var value = false
-      var wrapped = Wrapped()
-    }
+			// THIS INIT IS REQUIRED TO AVOID CRASHES
+			// WHEN DESIGNATED INIT IS DECLARED IN CLASS
+//			convenience override init() {
+//				self.init(
+//					value: false,
+//					wrapped: .init()
+//				)
+//			}
 
-    let initial = TestConfigurable()
-    let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
-    let actual1 = TestConfigurable {
-      $0
-        .value(true)
-        .wrapped(.init(value: 1))
-    }
-    let actual2 = TestConfigurable(
-      config: TestConfigurable.Config
-        .value(true)
-        .wrapped(.init(value: 1))
-    )
+			init(
+				value: Bool = false,
+				wrapped: TestConfigurable.Wrapped = .init()
+			) {
+				self.value = value
+				self.wrapped = wrapped
+			}
+		}
 
-    XCTAssertNotEqual(actual1.value, initial.value)
-    XCTAssertNotEqual(actual1.wrapped, initial.wrapped)
-    XCTAssertEqual(actual1.value, actual2.value)
-    XCTAssertEqual(actual1.wrapped, actual2.wrapped)
-    XCTAssertEqual(actual1.value, expected.value)
-    XCTAssertEqual(actual1.wrapped, expected.wrapped)
-  }
+		let initial = TestConfigurable()
 
-  func testCustomConfigurable() {
-    struct TestConfigurable: CustomConfigurable {
-      struct Wrapped: Equatable {
-        var value = 0
-      }
+		let expected = TestConfigurable(
+			value: true,
+			wrapped: .init(value: 1)
+		)
 
-      var value = false
-      var wrapped = Wrapped()
-    }
+		let actual1 = TestConfigurable { $0
+			.value(true)
+			.wrapped(.init(value: 1))
+		}
 
-    let initial = TestConfigurable()
-    let expected = TestConfigurable(value: true, wrapped: .init(value: 1))
-    let actual = TestConfigurable().configured {
-      $0
-        .value(true)
-        .wrapped(.init(value: 1))
-    }
+		let actual2 = TestConfigurable(
+			unsafeConfig: TestConfigurable.Config
+				.value(true)
+				.wrapped(.init(value: 1))
+		)
 
-    XCTAssertNotEqual(actual.value, initial.value)
-    XCTAssertNotEqual(actual.wrapped, initial.wrapped)
-    XCTAssertEqual(actual.value, expected.value)
-    XCTAssertEqual(actual.wrapped, expected.wrapped)
-  }
+		#expect(actual1.value != initial.value)
+		#expect(actual1.wrapped != initial.wrapped)
+		#expect(actual1.value == actual2.value)
+		#expect(actual1.wrapped == actual2.wrapped)
+		#expect(actual1.value == expected.value)
+		#expect(actual1.wrapped == expected.wrapped)
+	}
 
-  func testOptional() {
-    struct TestConfigurable: CustomConfigurable {
-      internal init(value: Bool = false, wrappedValue: Int = 0) {
-        self.value = value
-        wrapped?.value = wrappedValue
-      }
+	@Test
+	func configInitializable() {
+		final class TestConfigurable: NSObject {
+			struct Wrapped: Equatable {
+				var value = 0
+			}
 
-      class Wrapped: NSObject {
-        var value: Int? = 0
-        override init() { self.value = 0 }
-      }
+			var value: Bool = false
+			var wrapped: Wrapped = .init()
 
-      var value = false
-      let _wrapped: Wrapped = .init()
-      var wrapped: Wrapped? { _wrapped }
-    }
+			// NO DESIGNATED INITS, BASIC INIT() IS AVAILABLE
+			convenience init(
+				value: Bool = false,
+				wrapped: TestConfigurable.Wrapped = .init()
+			) {
+				self.init()
+				self.value = value
+				self.wrapped = wrapped
+			}
+		}
 
-    let initial = TestConfigurable()
-    let expected = TestConfigurable(value: true, wrappedValue: 1)
-    let actual = TestConfigurable().configured {
-      $0
-        .value(true)
-        .wrapped.value(1)
-    }
+		let initial = TestConfigurable()
 
-    XCTAssertNotEqual(actual.value, initial.value)
-    XCTAssertNotEqual(actual.wrapped?.value, initial.wrapped?.value)
-    XCTAssertEqual(actual.value, expected.value)
-    XCTAssertEqual(actual._wrapped.value, expected._wrapped.value)
-  }
+		let expected = TestConfigurable(
+			value: true,
+			wrapped: .init(value: 1)
+		)
 
-  func testScope() {
-    struct Container: ConfigInitializable {
-      class Content {
-        class InnerClass {
-          var value: Int = 0
-        }
+		let actual1 = TestConfigurable { $0
+			.value(true)
+			.wrapped(.init(value: 1))
+		}
 
-        struct InnerStruct {
-          var value: Int = 0
-        }
+		let actual2 = TestConfigurable(
+			unsafeConfig: TestConfigurable.Config
+				.value(true)
+				.wrapped(.init(value: 1))
+		)
 
-        var a: Int = 0
-        var b: Int = 0
-        var c: Int = 0
-        let innerClass: InnerClass? = nil
-        var innerStruct: InnerStruct?
+		#expect(actual1.value != initial.value)
+		#expect(actual1.wrapped != initial.wrapped)
+		#expect(actual1.value == actual2.value)
+		#expect(actual1.wrapped == actual2.wrapped)
+		#expect(actual1.value == expected.value)
+		#expect(actual1.wrapped == expected.wrapped)
+	}
 
-        init() {}
-      }
+	@Test
+	func customConfigurable() {
+		struct TestConfigurable: CustomConfigurable {
+			struct Wrapped: Equatable {
+				var value = 0
+			}
 
-      let content: Content = .init()
-    }
+			var value: Bool = false
+			var wrapped: Wrapped = .init()
+		}
 
-    let expected = Container {
-      $0
-        .content.a(1)
-        .content.b(2)
-        .content.c(3)
-        .content.innerClass.value(1)
-        .content.innerStruct.value(1)
-    }
-    let initial = Container()
-    let actual = Container {
-      $0
-        .content.scope {
-          $0
-            .a(1)
-            .b(2)
-            .c(3)
-            .innerClass
-            .ifLetScope {
-              $0
-                .value(1)
-            }
-            .innerStruct
-            .ifLetScope {
-              $0
-                .value(1)
-            }
-        }
-    }
+		let initial = TestConfigurable()
 
-    XCTAssertNotEqual(actual.content.a, initial.content.a)
-    XCTAssertNotEqual(actual.content.b, initial.content.b)
-    XCTAssertNotEqual(actual.content.c, initial.content.c)
-    XCTAssertEqual(actual.content.innerClass?.value, initial.content.innerClass?.value)
-    XCTAssertEqual(actual.content.innerStruct?.value, initial.content.innerStruct?.value)
+		let expected = TestConfigurable(
+			value: true,
+			wrapped: .init(value: 1)
+		)
 
-    XCTAssertEqual(actual.content.a, expected.content.a)
-    XCTAssertEqual(actual.content.b, expected.content.b)
-    XCTAssertEqual(actual.content.c, expected.content.c)
-    XCTAssertEqual(actual.content.innerClass?.value, expected.content.innerClass?.value)
-    XCTAssertEqual(actual.content.innerStruct?.value, expected.content.innerStruct?.value)
-  }
+		let actual = TestConfigurable().configured { $0
+			.value(true)
+			.wrapped(.init(value: 1))
+		}
+
+		#expect(actual.value != initial.value)
+		#expect(actual.wrapped != initial.wrapped)
+		#expect(actual.value == expected.value)
+		#expect(actual.wrapped == expected.wrapped)
+	}
+
+	@Test
+	func optionalValues() {
+		struct TestConfigurable: CustomConfigurable {
+			internal init(value: Bool = false, wrappedValue: Int = 0) {
+				self.value = value
+				wrapped?.value = wrappedValue
+			}
+
+			class Wrapped: NSObject {
+				var value: Int? = 0
+				override init() { self.value = 0 }
+			}
+
+			var value = false
+			let _wrapped: Wrapped = .init()
+			var wrapped: Wrapped? { _wrapped }
+		}
+
+		let initial = TestConfigurable()
+
+		let expected = TestConfigurable(
+			value: true,
+			wrappedValue: 1
+		)
+
+		let actual = TestConfigurable().configured { $0
+			.value(true)
+			.wrapped.value(1)
+		}
+
+		#expect(actual.value != initial.value)
+		#expect(actual.wrapped?.value != initial.wrapped?.value)
+		#expect(actual.value == expected.value)
+		#expect(actual._wrapped.value == expected._wrapped.value)
+	}
+
+	@Test
+	func scoping() {
+		struct Container: ConfigInitializable {
+			class Content {
+				class InnerClass {
+					var value: Int = 0
+				}
+
+				struct InnerStruct {
+					var value: Int = 0
+				}
+
+				var a: Int = 0
+				var b: Int = 0
+				var c: Int = 0
+				let innerClass: InnerClass? = nil
+				var innerStruct: InnerStruct?
+
+				init() {}
+			}
+
+			let content: Content = .init()
+		}
+
+		let initial = Container()
+
+		let expected = Container { $0
+			.content.a(1)
+			.content.b(2)
+			.content.c(3)
+			.content.innerClass.value(1)
+			.content.innerStruct.value(1)
+		}
+
+		let actual = Container { $0
+			.content.scope { $0
+				.a(1)
+				.b(2)
+				.c(3)
+				.innerClass
+				.ifLetScope { $0
+					.value(1)
+				}
+				.innerStruct
+				.ifLetScope { $0
+					.value(1)
+				}
+			}
+		}
+
+		#expect(actual.content.a != initial.content.a)
+		#expect(actual.content.b != initial.content.b)
+		#expect(actual.content.c != initial.content.c)
+		#expect(actual.content.innerClass?.value == initial.content.innerClass?.value)
+		#expect(actual.content.innerStruct?.value == initial.content.innerStruct?.value)
+
+		#expect(actual.content.a == expected.content.a)
+		#expect(actual.content.b == expected.content.b)
+		#expect(actual.content.c == expected.content.c)
+		#expect(actual.content.innerClass?.value == expected.content.innerClass?.value)
+		#expect(actual.content.innerStruct?.value == expected.content.innerStruct?.value)
+	}
 }
