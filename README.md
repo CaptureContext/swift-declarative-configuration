@@ -1,36 +1,18 @@
 # Swift Declarative Configuration
 
-[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![SwiftPM 6](https://img.shields.io/badge/swiftpm-6-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/contact-@capture__context-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
+[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![SwiftPM 6.0](https://img.shields.io/badge/swiftpm-6.0-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/contact-@capture__context-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
 
 Swift Declarative Configuration (SDC, for short) is a tiny library, that enables you to configure your objects in a declarative, consistent and understandable way, with ergonomics in mind. It can be used to configure any objects on any platform, including server-side-swift.
 
-## Products
+## Features
 
-- **[FunctionalModification](./Sources/FunctionalModification)**
+- **[Configurator](./Sources/DeclarativeConfiguration/Configurator/Configurator.swift)**
 
-  Provides modification functions for copying and modifying immutable stuff. It is useful for self-configuring objects like builder, when modifying methods should return modified `self`.
+Functional configurator for anything, enables you to specify modification of an object and to apply the modification later. Primary way of declaring configurations for your objects.
 
-- **[FunctionalKeyPath](./Sources/FunctionalKeyPath)**
+- **[Builder](./Sources/DeclarativeConfiguration/Configurator/Builder.swift)**
 
-  Functional KeyPath wrapper.
-
-- **[FunctionalConfigurator](./Sources/FunctionalConfigurator)**
-
-  Functional configurator for anything, enables you to specify modification of an object and to apply the modification later.
-
-  Also contains self-implementing protocols (`ConfigInitializable`,  `CustomConfigurable`) to enable you add custom configuration support for your types (`NSObject` already conforms to it for you).
-
-- **[FunctionalBuilder](./Sources/FunctionalBuilder)**
-
-  Functional builder for anything, enables you to modify object instances in a declarative way. Also contains `BuilderProvider` protocol with a computed `builder` property and implements that protocol on `NSObject` type.
-
-- **[FunctionalClosures](./Sources/FunctionalClosures)**
-
-  Functional closures allow you to setup functional handlers & datasources, the API may seem a bit strange at the first look, so feel free to ask or discuss anything [here](https://github.com/MakeupStudio/swift-declarative-configuration/issues/1).
-
-- **[DeclarativeConfiguration](./Sources/DeclarativeConfiguration)**
-
-  Wraps and exports all the products.
+Functional builder for anything, enables you to modify object instances in a declarative way. Also contains `BuilderProvider` protocol with a computed `builder` property and implements that protocol on `NSObject` type.vBuilder-style way of declaring configurations for your objects. Suitable for instantiated objects.
 
 ## Basic Usage
 
@@ -55,15 +37,16 @@ class ImageViewController: UIViewController {
 }
 ```
 
-### FunctionalConfigurator
+### Configurator
 
-> **Note:** This way is **recommended**, but remember, that custom types **MUST** implement initializer with no parameters even if the superclass already has it or you will get a crash otherwise.
+> [!NOTE]
+> _This way is **recommended**._
 
 ```swift
-import FunctionalConfigurator
+import DeclarativeConfiguration
 
 class ImageViewController: UIViewController {
-  let imageView = UIImageView { $0 
+  let imageView = UIImageView() { $0 
     .contentMode(.scaleAspectFit)
     .backgroundColor(.black)
     .layer.scope { $0
@@ -78,12 +61,10 @@ class ImageViewController: UIViewController {
 }
 ```
 
-### FunctionalBuilder
-
-> **Note:** This way is recommended too, and it is more **safe**, because it modifies existing objects.
+### Builder
 
 ```swift
-import FunctionalBuilder
+import DeclarativeConfiguration
 
 class ImageViewController: UIViewController {
   let imageView = UIImageView().builder
@@ -104,6 +85,8 @@ class ImageViewController: UIViewController {
 - `reduce(_:with:)`:
 
   ```swift
+  import DeclarativeConfiguration
+
   struct CounterState {
     var value: Int = 0
   }
@@ -118,6 +101,9 @@ class ImageViewController: UIViewController {
 
 
 ### FunctionalClosures
+
+> [!WARNING]
+> _Deprecated_
 
 ### No SDC
 
@@ -221,8 +207,6 @@ If your deployment target is iOS 17+ (or other platform with a corresponding ver
 
 ### More
 
-#### Builder
-
 Customize any object by passing initial value to a builder
 
 ```swift
@@ -248,6 +232,26 @@ let object = Object { $0
 }
 ```
 
+or batch-scoping
+
+```swift
+let object = Object { $0
+  .property.scope { $0 
+    .subproperty1(value)
+    .subproperty2(value)
+  }
+}
+```
+
+```swift
+let object = Object { $0
+  .property.ifLetScope { $0 // if property is optional
+    .subproperty1(value)
+    .subproperty2(value)
+  }
+}
+```
+
 Conform your own types to `BuilderProvider` protocol to access builder property.
 
 ```swift
@@ -257,16 +261,6 @@ import DeclarativeConfiguration
 extension CLLocationCoordinate2D: BuilderProvider {}
 // Now you can access `location.builder.latitude(0).build()`
 ```
-
-#### Configurator
-
-> **Note:** Your NSObject classes **must** implement `init()` to use Configurators. It's a little trade-off for the convenience it brings to your codebase, see [tests](./Tests/DeclarativeConfigurationTests/ConfiguratorTests.swift) for an example.
-
-#### DataSource
-
-`OptionalDataSource` and `DataSource` types are very similar to the `Handler`, but if `Handler<Input>` is kinda `OptionalDataSource<Input, Void>`, the second one may have different types of an output. Usage is similar, different types are provided just for better semantics.
-
-If your deployment target is iOS 17+ (or other platform with a corresponding version) you can use beta variadic generic `_DataSource` type
 
 ## Installation
 
@@ -284,8 +278,8 @@ If you use SwiftPM for your project structure, add DeclarativeConfiguration to y
 
 ```swift
 .package(
-  url: "git@github.com:capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor(from: "0.4.0")
+  url: "git@github.com:capturecontext/swift-declarative-configuration.git",
+  .upToNextMinor(from: "1.0.0-beta.1")
 )
 ```
 
@@ -294,7 +288,7 @@ or via HTTPS
 ```swift
 .package(
   url: "https://github.com:capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor("0.4.0")
+  .upToNextMinor(from: "1.0.0-beta.1")
 )
 ```
 
