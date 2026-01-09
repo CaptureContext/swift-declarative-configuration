@@ -575,8 +575,8 @@ struct ConfiguratorTests {
 			.content.a(1)
 			.content.b(2)
 			.content.c(3)
-			.content.innerClass.value(1)
-			.content.innerStruct.value(1)
+			.content.innerClass.ifLet.value(1)
+			.content.innerStruct.ifLet.value(1)
 		}
 
 		let actual = Container { $0

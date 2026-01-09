@@ -423,7 +423,7 @@ If you use SwiftPM for your project structure, add DeclarativeConfiguration to y
 ```swift
 .package(
   url: "git@github.com:capturecontext/swift-declarative-configuration.git",
-  .upToNextMinor(from: "0.4.0")
+  .upToNextMinor(from: "0.5.0")
 )
 ```
 
@@ -432,7 +432,7 @@ or via HTTPS
 ```swift
 .package(
   url: "https://github.com:capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor(from: "0.4.0")
+  .upToNextMinor(from: "0.5.0")
 )
 ```
 

@@ -213,26 +213,6 @@ public enum ConfigurationBlocks<Container: ConfigurationContainer> {
 				keyPath: self.keyPath.appending(path: keyPath)
 			)
 		}
-
-		@inlinable
-		public subscript<Wrapped, LocalValue>(
-			dynamicMember keyPath: WritableKeyPath<Wrapped, LocalValue>
-		) -> Callable<LocalValue?> where Value == Wrapped? {
-			Callable<LocalValue?>(
-				container: self.container,
-				keyPath: self.keyPath.appending(path: keyPath)
-			)
-		}
-
-		@inlinable
-		public subscript<Wrapped, LocalValue>(
-			dynamicMember keyPath: KeyPath<Wrapped, LocalValue>
-		) -> NonCallable<LocalValue?> where Value == Wrapped? {
-			NonCallable<LocalValue?>(
-				container: self.container,
-				keyPath: self.keyPath.appending(path: keyPath)
-			)
-		}
 	}
 
 	/// A configuration block for optional writable key paths that supports `@dynamicMemberLookup`
@@ -698,7 +678,6 @@ public enum ConfigurationBlocks<Container: ConfigurationContainer> {
 		}
 	}
 
-
 	/// A configuration block for optional non-writable key paths that supports `@dynamicMemberLookup`.
 	///
 	/// `NonCallableIfLet` represents optional read-only key paths. It allows peeking and
@@ -1026,7 +1005,10 @@ extension ConfigurationBlocks.NonCallableIfLet where Wrapped: _OptionalProtocol 
 	/// .ifLet(\.optionalProperty).subproperty(value) // ✅ this also works
 	/// ```
 	public var ifLet: ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped.Wrapped> {
-		.init(container: container, keyPath: keyPath.appending(path: \.__flattened_non_aggressive_marker_value))
+		.init(
+			container: container,
+			keyPath: keyPath.appending(path: \.__flattened_non_aggressive_marker_value)
+		)
 	}
 }
 
