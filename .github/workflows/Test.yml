@@ -12,11 +12,11 @@ jobs:
       !contains(github.event.head_commit.message, '[ci skip]') &&
       !contains(github.event.head_commit.message, '[ci skip test]') &&
       !contains(github.event.head_commit.message, '[ci skip test_macos]')
-    runs-on: macOS-12
+    runs-on: macos-26
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@v3
-    - name: Select Xcode 14.1.0
-      run: sudo xcode-select -s /Applications/Xcode_14.1.0.app
+    - name: Select Xcode 26.2
+      run: sudo xcode-select -s /Applications/Xcode_26.2.app
     - name: Run tests
-      run: make test
+      run: swift test
