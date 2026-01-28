@@ -1,6 +1,6 @@
 # swift-declarative-configuration
 
-[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![SwiftPM 6.2](https://img.shields.io/badge/swiftpm-6.2_|_5.10-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/contact-@capture__context-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
+[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![Swift 6.0](https://img.shields.io/badge/swiftpm-6.0_|_5.9-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/Platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/Contact-@capture__context-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
 
 **DeclarativeConfiguration** provides a declarative, fluent way to configure objects and values in Swift. It enables expressive inline configuration, composable setup logic, and consistent configuration patterns across codebases.
 
@@ -505,4 +505,4 @@ It's [no longer a part of `DeclarativeConfiguration` product](#package-structure
 
 ## License
 
-This library is released under the MIT license. See [LICENSE](./LICENSE) for details.
+This library is released under the MIT license. See [LICENSE](LICENSE) for details.
