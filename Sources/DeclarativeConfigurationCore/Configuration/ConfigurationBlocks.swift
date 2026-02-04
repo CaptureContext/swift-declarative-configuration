@@ -1,5 +1,5 @@
 import KeyPathsExtensions
-@_spi(Internals) import SwiftMarkerProtocols
+import SwiftMarkerProtocols
 
 /// Typed namespace for generic configuration blocks.
 public enum ConfigurationBlocks<Container: ConfigurationContainer> {
@@ -887,7 +887,7 @@ extension ConfigurationBlocks.Callable where Value: _OptionalProtocol {
 	/// .ifLet(\.optionalProperty).subproperty(value) // ✅ this also works
 	/// ```
 	public var ifLet: ConfigurationBlocks<Container>.CallableIfLet<Value.Wrapped> {
-		.init(container: container, keyPath: keyPath.appending(path: \.__marker_value))
+		.init(container: container, keyPath: keyPath.appending(path: \._optional))
 	}
 
 	/// Registers update for the current value. Applied only if currentValue is nil
@@ -910,7 +910,7 @@ extension ConfigurationBlocks.Callable where Value: _OptionalProtocol {
 	public func ifNil(_ value: Value) -> Container {
 		container._withStorage { $0
 			.appending(_ConfigurationItems.Modify { base in
-				guard base[keyPath: keyPath].__marker_value == nil else { return }
+				guard base[keyPath: keyPath]._optional == nil else { return }
 				base[keyPath: keyPath] = value
 			})
 		}
@@ -933,7 +933,7 @@ extension ConfigurationBlocks.NonCallable where Value: _OptionalProtocol {
 	/// .ifLet(\.optionalProperty).subproperty(value) // ✅ this also works
 	/// ```
 	public var ifLet: ConfigurationBlocks<Container>.NonCallableIfLet<Value.Wrapped> {
-		.init(container: container, keyPath: keyPath.appending(path: \.__marker_value))
+		.init(container: container, keyPath: keyPath.appending(path: \._optional))
 	}
 }
 
@@ -980,8 +980,8 @@ extension ConfigurationBlocks.CallableIfLet where Wrapped: _OptionalProtocol {
 		container._withStorage { $0
 			.appending(_ConfigurationItems.Modify { base in
 				guard
-					let currentValue = base[keyPath: keyPath].__marker_value,
-					currentValue.__marker_value == nil
+					let currentValue = base[keyPath: keyPath]._optional,
+					currentValue._optional == nil
 				else { return }
 				base[keyPath: keyPath] = value
 			})
@@ -1184,10 +1184,10 @@ extension ConfigurationBlocks.NonCallableIfLet {
 
 extension Optional where Wrapped: _OptionalProtocol {
 	var __flattened_non_aggressive_marker_value: Wrapped.Wrapped? {
-		get { self.flatMap(\.__marker_value) }
+		get { self.flatMap(\._optional) }
 		set {
 			guard var wrapped = self else { return }
-			wrapped.__marker_value = newValue
+			wrapped._optional = newValue
 			self = wrapped
 		}
 	}

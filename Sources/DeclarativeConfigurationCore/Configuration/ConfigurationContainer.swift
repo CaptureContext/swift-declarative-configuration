@@ -1,5 +1,5 @@
-@_spi(Internals) import KeyPathsExtensions
-@_spi(Internals) import SwiftMarkerProtocols
+import KeyPathsExtensions
+import SwiftMarkerProtocols
 
 public protocol ConfigurationContainer<Base> {
 	associatedtype Base
@@ -24,13 +24,13 @@ extension ConfigurationContainer {
 
 extension ConfigurationContainer where Base: _OptionalProtocol {
 	public var ifLet: Blocks.CallableIfLet<Base.Wrapped> {
-		ifLet(\.__marker_value)
+		ifLet(\._optional)
 	}
 
 	public func ifNil(_ newValue: Base) -> Self {
 		_withStorage { $0
 			.appending(_ConfigurationItems.Modify { base in
-				guard base.__marker_value == nil else { return }
+				guard base._optional == nil else { return }
 				base = newValue
 			})
 		}
