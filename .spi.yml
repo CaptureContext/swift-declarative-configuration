@@ -1,0 +1,36 @@
+version: 1
+builder:
+	configs:
+	- platform: ios
+		scheme: DeclarativeConfiguration
+	- platform: macos-xcodebuild
+		scheme: DeclarativeConfiguration
+	- platform: tvos
+		scheme: DeclarativeConfiguration
+	- platform: watchos
+		scheme: DeclarativeConfiguration
+	- platform: linux
+		scheme: DeclarativeConfiguration
+		swift_version: '5.9'
+	- platform: linux
+		scheme: DeclarativeConfiguration
+		swift_version: '6.0'
+
+	- platform: ios
+		scheme: DeclarativeConfigurationCore
+	- platform: macos-xcodebuild
+		scheme: DeclarativeConfigurationCore
+	- platform: tvos
+		scheme: DeclarativeConfigurationCore
+	- platform: watchos
+		scheme: DeclarativeConfigurationCore
+	- platform: linux
+		scheme: DeclarativeConfigurationCore
+		swift_version: '5.9'
+	- platform: linux
+		scheme: DeclarativeConfigurationCore
+		swift_version: '6.0'
+
+	- documentation_targets:
+		- DeclarativeConfiguration
+		- DeclarativeConfigurationCore
