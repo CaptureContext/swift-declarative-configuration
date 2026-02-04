@@ -1,6 +1,6 @@
 # swift-declarative-configuration
 
-[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![Swift 6.0](https://img.shields.io/badge/swiftpm-6.0_|_5.9-ED523F.svg?style=flat)](https://swift.org/download/) ![Platforms](https://img.shields.io/badge/Platforms-iOS_11_|_macOS_10.13_|_tvOS_11_|_watchOS_4_|_Catalyst_13-ED523F.svg?style=flat) [![@capture_context](https://img.shields.io/badge/Contact-@capture__context-1DA1F2.svg?style=flat&logo=twitter)](https://twitter.com/capture_context) 
+[![Test](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml/badge.svg)](https://github.com/CaptureContext/swift-declarative-configuration/actions/workflows/Test.yml) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FCaptureContext%2Fswift-declarative-configuration%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/CaptureContext/swift-declarative-configuration) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FCaptureContext%2Fswift-declarative-configuration%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/CaptureContext/swift-declarative-configuration)
 
 **DeclarativeConfiguration** provides a declarative, fluent way to configure objects and values in Swift. It enables expressive inline configuration, composable setup logic, and consistent configuration patterns across codebases.
 
@@ -422,8 +422,8 @@ If you use SwiftPM for your project structure, add DeclarativeConfiguration to y
 
 ```swift
 .package(
-  url: "git@github.com:capturecontext/swift-declarative-configuration.git",
-  .upToNextMinor(from: "0.5.0")
+  url: "https://github.com/capturecontext/swift-declarative-configuration.git",
+  .upToNextMinor(from: "0.5.1")
 )
 ```
 
@@ -431,8 +431,8 @@ or via HTTPS
 
 ```swift
 .package(
-  url: "https://github.com:capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor(from: "0.5.0")
+  url: "https://github.com/capturecontext/swift-declarative-configuration.git", 
+  .upToNextMinor(from: "0.5.1")
 )
 ```
 
