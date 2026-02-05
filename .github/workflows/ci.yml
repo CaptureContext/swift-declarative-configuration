@@ -18,8 +18,7 @@ jobs:
     name: xcodebuild-test
     if: |
       !contains(github.event.head_commit.message, '[ci skip]') &&
-      !contains(github.event.head_commit.message, '[ci skip test]') &&
-      !contains(github.event.head_commit.message, '[ci skip test_macos]')
+      !contains(github.event.head_commit.message, '[ci skip test]')
     runs-on: macos-latest
     strategy:
       matrix:
