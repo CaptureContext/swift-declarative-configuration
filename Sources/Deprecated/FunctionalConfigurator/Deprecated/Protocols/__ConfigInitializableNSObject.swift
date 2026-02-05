@@ -1,5 +1,6 @@
 import Foundation
 
+#if canImport(ObjectiveC)
 /// Do not use this protocol, it will be removed in future versions in favor or safer APIs
 ///
 /// It's an implementation detail used to silence implementation warnings for
@@ -90,3 +91,4 @@ fileprivate extension ___ConfigInitializableNSObject_DEPRECATED where Self: NSOb
 }
 
 extension NSObject: ___ConfigInitializableNSObject_DEPRECATED {}
+#endif
