@@ -23,7 +23,7 @@ public struct DefaultConfigurationStorage<Base>: ConfigurationStorage {
 		_ item: any _ConfigurationItem<Base>
 	) -> DefaultConfigurationStorage<Base> {
 		reduce(self) { _self in
-			_self.items.append(item)
+			_self.items.append(item as (any _ConfigurationItem))
 		}
 	}
 }
