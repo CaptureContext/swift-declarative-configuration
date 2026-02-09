@@ -404,7 +404,7 @@ extension CustomType: BuilderProvider {}
 >   }
 >   ```
 >
-> Looks like a bug in Swift 🫠
+> Looks like [a bug in Swift](https://github.com/swiftlang/swift/issues/74853) 🫠
 
 ## Installation
 
