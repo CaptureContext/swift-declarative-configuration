@@ -375,13 +375,25 @@ extension CustomType: BuilderProvider {}
 > [!WARNING]
 >
 > The following API won't call configuration block for some reason
+>
 > ```swift
 > struct Example: DefaultConfigurableProtocol {
 >   var property: Int = 0
 > }
-> 
-> // Implicit type inference on the rhs of the expression
+>
+> // Implicit type inference on the rhs (init)
 > let example: Example = .init() { $0
+>   .property(1)
+> }
+>
+> // Implicit type inference on the rhs (static function)
+> let example: Example = .customStaticFactory() { $0
+>   .property(1)
+> }
+>
+> // Explicit type won't fix the issue when init is called explicitly
+> // since it's treated as static function producing `Self`
+> let example = Example.init() { $0
 >   .property(1)
 > }
 > ```
@@ -396,6 +408,14 @@ extension CustomType: BuilderProvider {}
 >   }
 >   ```
 >
+> - Wrap the call in parentheses with argument label:
+>
+>   ```swift
+>   let example = .init()(config: { $0
+>     .property(1)
+>   })
+>   ```
+>   
 > - Use `.configured` or `.self` or `.callAsFunction` after initializer
 >
 >   ```swift
@@ -404,7 +424,7 @@ extension CustomType: BuilderProvider {}
 >   }
 >   ```
 >
-> Looks like [a bug in Swift](https://github.com/swiftlang/swift/issues/74853) 🫠
+> Looks like [a bug in Swift](https://github.com/swiftlang/swift/issues/87121) 🫠
 
 ## Installation
 
