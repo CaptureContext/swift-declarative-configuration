@@ -18,7 +18,7 @@
   - [Optionals](#optionals)
   - [Custom types](#custom-types)
   - [Builder](#builder)
-  - [Known issues](known-issues)
+  - [Known issues](#known-issues)
 - [Installation](#installation)
 - [Migration notes](#migration-notes)
 - [License](#license)
@@ -430,24 +430,15 @@ extension CustomType: BuilderProvider {}
 
 ### Basic
 
-You can add DeclarativeConfiguration to an Xcode project by adding it as a package dependency.
+You can add `swift-declarative-configuration` to an Xcode project by adding it as a package dependency
 
 1. From the **File** menu, select **Swift Packages › Add Package Dependency…**
 2. Enter [`"https://github.com/capturecontext/swift-declarative-configuration"`](https://github.com/capturecontext/swift-declarative-configuration) into the package repository URL text field
-3. Choose products you need to link them to your project.
+3. Choose products you need to link to your project.
 
 ### Recommended
 
-If you use SwiftPM for your project structure, add DeclarativeConfiguration to your package file. 
-
-```swift
-.package(
-  url: "https://github.com/capturecontext/swift-declarative-configuration.git",
-  .upToNextMinor(from: "0.5.1")
-)
-```
-
-or via HTTPS
+If you use SwiftPM for your project structure, add `swift-declarative-configuration` to your package file
 
 ```swift
 .package(
@@ -456,7 +447,7 @@ or via HTTPS
 )
 ```
 
-Do not forget about target dependencies:
+Do not forget about target dependencies
 
 ```swift
 .product(
