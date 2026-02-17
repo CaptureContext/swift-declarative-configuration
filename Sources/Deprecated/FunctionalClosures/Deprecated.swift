@@ -6,6 +6,7 @@ public enum HandlerContainerBehaviour {
 	case appending
 }
 
+#if swift(>=5.10)
 /// A wrapper for clusure-based interaction between objects
 ///
 /// Provides a public API to set internal closure-based hanlder or delegate with a functional API
@@ -48,6 +49,7 @@ public class _Handler<each T> {
 		projectedValue?(repeat each input)
 	}
 }
+#endif
 
 @available(*, deprecated, message: "If you use this functionality, consider copying sources and please submit an issue to the repo, our advice is to use Combine/Observation instead")
 public typealias Handler = Handler1
@@ -432,6 +434,7 @@ func unpack<each Args, T>(
 
 // MARK: - DataSource
 
+#if swift(>=5.10)
 /// A wrapper for clusure-based interaction between objects
 ///
 /// Provides a public API to set internal closure-based datasource with a functional API
@@ -470,6 +473,7 @@ public class _DataSource<each T, Output> {
 		projectedValue(repeat each args)
 	}
 }
+#endif
 
 /// A wrapper for clusure-based interaction between objects
 ///
