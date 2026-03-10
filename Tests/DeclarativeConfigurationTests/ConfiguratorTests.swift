@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-import KeyPathMapper
+import KeyPathMapping
 import KeyPathsExtensions
 @testable import DeclarativeConfiguration
 
