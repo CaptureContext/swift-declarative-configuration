@@ -21,6 +21,7 @@
   - [Known issues](#known-issues)
 - [Installation](#installation)
 - [Migration notes](#migration-notes)
+- [Alternatives](#alternatives)
 - [License](#license)
 
 ## Motivation
@@ -443,7 +444,7 @@ If you use SwiftPM for your project structure, add `swift-declarative-configurat
 ```swift
 .package(
   url: "https://github.com/capturecontext/swift-declarative-configuration.git", 
-  .upToNextMinor(from: "0.5.1")
+  .upToNextMinor(from: "0.6.0")
 )
 ```
 
@@ -513,6 +514,13 @@ It's [no longer a part of `DeclarativeConfiguration` product](#package-structure
 Primary goal for this module was dealing with optional keyPaths, since `writableKeyPath.appending(path: \.optionalProperty?.subproperty)` is never writable and also it may be tricky to unwrap a keyPath through an optional value. However we found a way to use `subscript`s to achieve this with native `KeyPaths` and extracted our helpers into a separate [swift-keypaths-extensions package](https://github.com/capturecontext/swift-keypaths-extensions).
 
 It's [no longer a part of `DeclarativeConfiguration` product](#package-structure), however `FunctionalKeyPath` product is still available. Consider migrating to native keyPaths or simply copying sources.
+
+## Alternatives
+
+- https://github.com/devxoul/Then
+  _Mentioned in [The Problem](#the-problem) section_
+- https://github.com/dankinsoid/VDChain
+  _Similar API alternative_
 
 ## License
 
