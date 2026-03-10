@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1
 
 import PackageDescription
 
@@ -47,7 +47,7 @@ let package = Package(
 	dependencies: [
 		.package(
 			url: "https://github.com/capturecontext/swift-keypaths-extensions.git",
-			.upToNextMinor(from: "0.1.6")
+			.upToNextMinor(from: "0.2.0")
 		),
 		.package(
 			url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git",
