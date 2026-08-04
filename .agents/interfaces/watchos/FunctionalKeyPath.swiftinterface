@@ -1,0 +1,162 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+// swift-module-flags: -target arm64-apple-watchos6.0-simulator -enable-objc-interop -swift-version 6 -O -module-name FunctionalKeyPath -package-name swift_declarative_configuration
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.3
+@_exported import DeclarativeConfigurationCore
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@available(*, deprecated, renamed: "ValuePath", message: "FunctionalKeyPath module is deprecated and will be removed in v1.0.0\nUse `import DeclarativeConfiguration` instead.")
+public typealias FunctionalKeyPath = FunctionalKeyPath.__ValuePath_DEPRECATED
+public struct __ValuePath_DEPRECATED<Root, Value> {
+  @usableFromInline
+  internal let _embed: (Value, Root) -> Root
+  @usableFromInline
+  internal let _extract: (Root) -> Value
+  public init(embed: @escaping (Value, Root) -> Root, extract: @escaping (Root) -> Value)
+}
+@available(*, deprecated, message: "Consider using KeyPaths or copying sources instead.\nhttps://github.com/capturecontext/swift-keypaths-extensions\ncan help with combining optional keypaths while keeping hashability.\nhttps://github.com/pointfreeco/swift-case-paths can help with\nboth simple optional keypaths and enum case paths (CasePaths).\nValuePaths are likely to be removed in v1.0.0")
+public typealias ValuePath<Root, Value> = FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value>
+extension FunctionalKeyPath.__ValuePath_DEPRECATED {
+  @inlinable public func embed(_ value: Value, in root: Root) -> Root {
+		_embed(value, root)
+	}
+  @inlinable public func embed(_ value: Value, in root: Root) where Root : AnyObject {
+		_ = _embed(value, root)
+	}
+  @inlinable public func embed(_ value: Value, in root: inout Root) {
+		root = embed(value, in: root)
+	}
+  @inlinable public func extract(from root: Root) -> Value {
+		_extract(root)
+	}
+  @inlinable public init(_ keyPath: Swift.WritableKeyPath<Root, Value>) {
+		self.init(
+			embed: { value, root in
+				var root = root
+				root[keyPath: keyPath] = value
+				return root
+			},
+			extract: { root in
+				root[keyPath: keyPath]
+			}
+		)
+	}
+  @inlinable public static func getonly(_ keyPath: Swift.KeyPath<Root, Value>) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value> {
+		__ValuePath_DEPRECATED(
+			embed: { _, root in
+				root
+			},
+			extract: { root in
+				root[keyPath: keyPath]
+			}
+		)
+	}
+  @inlinable public func unwrapped<Wrapped>(withDefaultValue defaultValue: @autoclosure @escaping () -> Wrapped) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Wrapped> where Value == Wrapped? {
+		__ValuePath_DEPRECATED<Root, Wrapped>(
+			embed: { value, root in
+				_embed(value, root)
+			},
+			extract: {
+				_extract($0) ?? defaultValue()
+			}
+		)
+	}
+  @inlinable public static func optional(_ keyPath: Swift.WritableKeyPath<Root, Value>) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value?> {
+		__ValuePath_DEPRECATED(keyPath).optional()
+	}
+  @inlinable public static func optional(unwrapWithRoot: Swift.Bool, _ keyPath: Swift.WritableKeyPath<Root, Value>) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root?, Value?> {
+		__ValuePath_DEPRECATED(keyPath).optional(unwrapWithRoot: unwrapWithRoot)
+	}
+  @inlinable public func optional() -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value?> {
+		__ValuePath_DEPRECATED<Root, Value?>(
+			embed: { value, root in
+				guard let value else { return root }
+				return self._embed(value, root)
+			},
+			extract: { root in
+				return self._extract(root)
+			}
+		)
+	}
+  @inlinable public func optional(unwrapWithRoot: Swift.Bool) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root?, Value?> {
+		__ValuePath_DEPRECATED<Root?, Value?>(
+			embed: { value, root in
+				guard let root, let value else { return unwrapWithRoot ? root : nil }
+				return self._embed(value, root)
+			},
+			extract: { root in
+				guard let root else { return nil }
+				return self._extract(root)
+			}
+		)
+	}
+  @inlinable public func appending<AppendedValue>(path: FunctionalKeyPath.__ValuePath_DEPRECATED<Value, AppendedValue>) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, AppendedValue> {
+		__ValuePath_DEPRECATED<Root, AppendedValue>(
+			embed: { appendedValue, root in
+				self.embed(
+					path.embed(
+						appendedValue,
+						in: self.extract(from: root)
+					),
+					in: root
+				)
+			},
+			extract: { root in
+				path.extract(
+					from: self.extract(from: root)
+				)
+			}
+		)
+	}
+  @inlinable public func appending<Wrapped, AppendedValue>(path: FunctionalKeyPath.__ValuePath_DEPRECATED<Wrapped, AppendedValue>) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, AppendedValue?> where Value == Wrapped? {
+		appending(path: path.optional(unwrapWithRoot: true))
+	}
+}
+extension FunctionalKeyPath.__ValuePath_DEPRECATED {
+  @inlinable public static func key<Key, Element>(_ key: Key) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value> where Root == [Key : Element], Value == Element?, Key : Swift.Hashable {
+		__ValuePath_DEPRECATED(
+			embed: { value, root in
+				reduce(root) { $0[key] = value }
+			},
+			extract: { $0[key] }
+		)
+	}
+  @inlinable public static func index(_ index: Root.Index) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value> where Root : Swift.MutableCollection, Value == Root.Element {
+		__ValuePath_DEPRECATED(
+			embed: { value, root in
+				reduce(root) { root in
+					root[index] = value
+				}
+			},
+			extract: { root in
+				root[index]
+			}
+		)
+	}
+  @inlinable public static func index(getonly index: Root.Index) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value> where Root : Swift.Collection, Value == Root.Element {
+		__ValuePath_DEPRECATED(
+			embed: { _, root in root },
+			extract: { $0[index] }
+		)
+	}
+  @inlinable public static func index(safe index: Root.Index) -> FunctionalKeyPath.__ValuePath_DEPRECATED<Root, Value> where Root : Swift.MutableCollection, Value == Root.Element? {
+		__ValuePath_DEPRECATED<Root, Value>(
+			embed: { value, root in
+				reduce(root) { root in
+					guard
+						let value = value,
+						root.indices.contains(index)
+					else { return }
+					root[index] = value
+				}
+			},
+			extract: { root in
+				root.indices.contains(index)
+				? root[index]
+				: nil
+			}
+		)
+	}
+}
