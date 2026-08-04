@@ -30,7 +30,7 @@ jobs:
         id: branch
         shell: bash
         run: |
-          update_branch="automation/swiftinterfaces/$GITHUB_RUN_ID"
+          update_branch="automation/swiftinterfaces-$GITHUB_RUN_ID"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$update_branch"

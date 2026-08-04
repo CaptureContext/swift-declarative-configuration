@@ -59,7 +59,7 @@ jobs:
         shell: bash
         run: |
           target_branch="${INPUT_TARGET_BRANCH:-$GITHUB_REF_NAME}"
-          interface_branch="automation/swiftinterfaces/$GITHUB_RUN_ID/$PLATFORM"
+          interface_branch="automation/swiftinterfaces-$GITHUB_RUN_ID-$PLATFORM"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$interface_branch"
