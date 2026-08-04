@@ -1,0 +1,120 @@
+name: Generate Swift interface
+run-name: Generate ${{ inputs.platform }} interfaces
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Normalized platform name (macos, ios, linux, windows, wasi, ...)
+        required: true
+        type: string
+      target_branch:
+        description: Branch that receives the generated-interface PR (defaults to the dispatched branch)
+        required: false
+        default: ""
+        type: string
+  workflow_call:
+    inputs:
+      platform:
+        required: true
+        type: string
+      target_branch:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    name: Generate ${{ inputs.platform }}
+    runs-on: ${{ (inputs.platform == 'linux' || inputs.platform == 'wasi') && 'ubuntu-latest' || inputs.platform == 'windows' && 'windows-latest' || 'macos-latest' }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      INPUT_TARGET_BRANCH: ${{ inputs.target_branch }}
+      PLATFORM: ${{ inputs.platform }}
+    steps:
+      - name: Validate request
+        shell: bash
+        run: |
+          if [[ ! "$PLATFORM" =~ ^[a-z0-9][a-z0-9._-]*$ ]]; then
+            echo "Platform must be a normalized lowercase directory name: $PLATFORM" >&2
+            exit 1
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.target_branch != '' && inputs.target_branch || github.ref_name }}
+
+      - name: Set up Swift outside Xcode
+        if: runner.os != 'macOS'
+        uses: SwiftyLab/setup-swift@v1
+        with:
+          swift-version: "6"
+          sdks: ${{ inputs.platform == 'wasi' && 'wasm' || '' }}
+
+      - name: Prepare generation branch
+        shell: bash
+        run: |
+          target_branch="${INPUT_TARGET_BRANCH:-$GITHUB_REF_NAME}"
+          interface_branch="automation/swiftinterfaces/$GITHUB_RUN_ID/$PLATFORM"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$interface_branch"
+          echo "TARGET_BRANCH=$target_branch" >> "$GITHUB_ENV"
+          echo "INTERFACE_BRANCH=$interface_branch" >> "$GITHUB_ENV"
+
+      - name: Select WASI SDK
+        if: inputs.platform == 'wasi'
+        shell: bash
+        run: |
+          swift_sdk="$(swift sdk list | sed -nE '/(_wasm|wasi)/ { s/^[[:space:]]*([^[:space:]]+).*/\1/p; q; }')"
+          if [[ -z "$swift_sdk" ]]; then
+            echo "No installed WASI Swift SDK was found" >&2
+            swift sdk list >&2 || true
+            exit 1
+          fi
+          echo "SWIFT_SDK=$swift_sdk" >> "$GITHUB_ENV"
+
+      - name: Generate interface
+        shell: bash
+        run: |
+          interface_dir=".agents/interfaces/$PLATFORM"
+          if [[ -d "$interface_dir" ]]; then
+            find "$interface_dir" -maxdepth 1 -type f -name '*.swiftinterface' -delete
+          fi
+          if [[ -n "${SWIFT_SDK:-}" ]]; then
+            make swiftinterface platform="$PLATFORM" swift_sdk="$SWIFT_SDK"
+          else
+            make swiftinterface platform="$PLATFORM"
+          fi
+
+      - name: Commit and push interface
+        id: commit
+        shell: bash
+        run: |
+          git add --all -- ".agents/interfaces/$PLATFORM"
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No $PLATFORM interface changes" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git commit -m "Update $PLATFORM Swift interfaces"
+          git push --force-with-lease --set-upstream origin "$INTERFACE_BRANCH"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open platform PR
+        if: steps.commit.outputs.changed == 'true'
+        shell: bash
+        run: |
+          pr_url="$(gh pr list --state open --base "$TARGET_BRANCH" --head "$INTERFACE_BRANCH" --json url --jq '.[0].url')"
+          if [[ -z "$pr_url" ]]; then
+            pr_url="$(gh pr create \
+              --base "$TARGET_BRANCH" \
+              --head "$INTERFACE_BRANCH" \
+              --title "chore: update $PLATFORM Swift interfaces" \
+              --body "Generated from \`$TARGET_BRANCH\` by workflow run $GITHUB_RUN_ID. Merge this PR into the aggregation branch after reviewing the platform-specific API snapshot.")"
+          fi
+          echo "$pr_url" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,85 @@
+name: Update Swift interfaces
+run-name: Update Swift interfaces from ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: JSON array of independently generated platforms
+        required: true
+        default: '["macos","ios","tvos","watchos","maccatalyst"]'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    name: Create aggregation branch
+    runs-on: ubuntu-latest
+    outputs:
+      update_branch: ${{ steps.branch.outputs.update_branch }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - name: Push aggregation branch
+        id: branch
+        shell: bash
+        run: |
+          update_branch="automation/swiftinterfaces/$GITHUB_RUN_ID"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$update_branch"
+          git commit --allow-empty -m "Prepare Swift interface update"
+          git push --force-with-lease --set-upstream origin "$update_branch"
+          echo "update_branch=$update_branch" >> "$GITHUB_OUTPUT"
+
+  generate:
+    name: Generate ${{ matrix.platform }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(inputs.platforms) }}
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: ./.github/workflows/generate-swiftinterface.yml
+    with:
+      platform: ${{ matrix.platform }}
+      target_branch: ${{ needs.prepare.outputs.update_branch }}
+
+  finalize:
+    name: Open draft aggregation PR
+    if: always() && needs.prepare.result == 'success'
+    needs:
+      - prepare
+      - generate
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_BRANCH: ${{ github.ref_name }}
+      UPDATE_BRANCH: ${{ needs.prepare.outputs.update_branch }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - name: Open draft PR
+        shell: bash
+        run: |
+          pr_url="$(gh pr list --state open --base "$TARGET_BRANCH" --head "$UPDATE_BRANCH" --json url --jq '.[0].url')"
+          if [[ -z "$pr_url" ]]; then
+            pr_url="$(gh pr create \
+              --draft \
+              --base "$TARGET_BRANCH" \
+              --head "$UPDATE_BRANCH" \
+              --title "chore: update platform Swift interfaces" \
+              --body "Aggregation PR for workflow run $GITHUB_RUN_ID. Merge the successful platform PRs into \`$UPDATE_BRANCH\`; failed platform jobs remain visible in the workflow and can be fixed or intentionally ignored. Matrix result: \`${{ needs.generate.result }}\`.")"
+          fi
+          echo "$pr_url" >> "$GITHUB_STEP_SUMMARY"
