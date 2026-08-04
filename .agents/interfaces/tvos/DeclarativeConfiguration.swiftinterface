@@ -1,0 +1,176 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+// swift-module-flags: -target arm64-apple-tvos13.0-simulator -enable-objc-interop -swift-version 6 -O -module-name DeclarativeConfiguration -package-name swift_declarative_configuration
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.3
+@_exported import DeclarativeConfigurationCore
+import Foundation
+@_exported import FunctionalClosures
+import Swift
+import SwiftMarkerProtocols
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@dynamicMemberLookup public struct Builder<Base> : DeclarativeConfigurationCore.ConfigurationContainer {
+  @usableFromInline
+  internal var initialValue: () -> Base
+  @_hasStorage public var configurator: DeclarativeConfiguration.Configurator<Base> {
+    get
+  }
+  @inlinable public var base: Base {
+    get { initialValue() }
+  }
+  @inlinable public init(_ initialValue: @autoclosure @escaping () -> Base) {
+		self.init(
+			initialValue: initialValue,
+			configurator: .empty
+		)
+	}
+  public init(initialValue: @escaping () -> Base, configurator: DeclarativeConfiguration.Configurator<Base>)
+  @inlinable public func build() -> Base { configurator.configured(base) }
+  @inlinable public func apply() where Base : AnyObject { _ = build() }
+  @inlinable public func commit() -> DeclarativeConfiguration.Builder<Base> { .init(build()) }
+  @inlinable public func combined(with configurator: DeclarativeConfiguration.Configurator<Base>) -> DeclarativeConfiguration.Builder<Base> {
+		Builder(
+			initialValue: initialValue,
+			configurator: configurator.combined(with: configurator)
+		)
+	}
+  public func transform(_ transform: @escaping (Base) -> Base) -> DeclarativeConfiguration.Builder<Base>
+  @inlinable public func modify(_ transform: @escaping (inout Base) -> Swift.Void) -> DeclarativeConfiguration.Builder<Base> {
+		Builder(
+			initialValue: initialValue,
+			configurator: configurator.modify(transform)
+		)
+	}
+}
+public protocol BuilderProvider {
+}
+extension DeclarativeConfiguration.BuilderProvider {
+  @inlinable public var builder: DeclarativeConfiguration.Builder<Self> {
+    get { .init(self) }
+  }
+}
+extension ObjectiveC.NSObject : DeclarativeConfiguration.BuilderProvider {
+}
+@dynamicMemberLookup public struct Configurator<Base> : DeclarativeConfigurationCore.ConfigurationContainer {
+  @usableFromInline
+  internal var storage: any DeclarativeConfigurationCore.ConfigurationStorage<Base>
+  public init(storage: any DeclarativeConfigurationCore.ConfigurationStorage<Base>)
+  @inlinable public init() {
+		self.init(storage: DefaultConfigurationStorage())
+	}
+  @inlinable public init(config configuration: (DeclarativeConfiguration.Configurator<Base>) -> DeclarativeConfiguration.Configurator<Base>) {
+		self = configuration(.empty)
+	}
+  @inlinable public func configure(_ base: inout Base) {
+		base = configured(base)
+	}
+  public func configure(_ base: Base) where Base : AnyObject
+  public func configured(_ base: Base) -> Base
+  public func combined(with configurator: DeclarativeConfiguration.Configurator<Base>) -> DeclarativeConfiguration.Configurator<Base>
+  public func transform(_ transform: @escaping (Base) -> Base) -> DeclarativeConfiguration.Configurator<Base>
+  public func modify(_ transform: @escaping (inout Base) -> Swift.Void) -> DeclarativeConfiguration.Configurator<Base>
+  @inlinable public static var empty: DeclarativeConfiguration.Configurator<Base> {
+    get {
+		.init(storage: DefaultConfigurationStorage())
+	}
+  }
+  @inlinable public static func modify(_ transform: @escaping (inout Base) -> Swift.Void) -> DeclarativeConfiguration.Configurator<Base> {
+		empty.modify(transform)
+	}
+  @inlinable public static func transform(_ transform: @escaping (Base) -> Base) -> DeclarativeConfiguration.Configurator<Base> {
+		empty.transform(transform)
+	}
+  @inlinable public static subscript<Value>(dynamicMember keyPath: Swift.WritableKeyPath<Base, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<DeclarativeConfiguration.Configurator<Base>>.Callable<Value> {
+    get {
+		empty[dynamicMember: keyPath]
+	}
+  }
+  @inlinable public static subscript<Wrapped, Value>(dynamicMember keyPath: Swift.WritableKeyPath<Wrapped, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<DeclarativeConfiguration.Configurator<Base>>.Callable<Value?> where Base == Wrapped? {
+    get {
+		empty[dynamicMember: keyPath]
+	}
+  }
+  @inlinable public static subscript<Value>(dynamicMember keyPath: Swift.KeyPath<Base, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<DeclarativeConfiguration.Configurator<Base>>.NonCallable<Value> {
+    get {
+		empty[dynamicMember: keyPath]
+	}
+  }
+  @inlinable public static subscript<Wrapped, Value>(dynamicMember keyPath: Swift.KeyPath<Wrapped, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<DeclarativeConfiguration.Configurator<Base>>.NonCallable<Value?> where Base == Wrapped? {
+    get {
+		empty[dynamicMember: keyPath]
+	}
+  }
+}
+extension DeclarativeConfiguration.Configurator where Base : SwiftMarkerProtocols._OptionalProtocol {
+  public static var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<DeclarativeConfiguration.Configurator<Base>>.CallableIfLet<Base.Wrapped> {
+    get
+  }
+  public static func ifNil(_ newValue: Base) -> DeclarativeConfiguration.Configurator<Base>
+}
+extension DeclarativeConfigurationCore.AnyConfigurationContainer {
+  public static func config(_ config: DeclarativeConfiguration.Configurator<Base>) -> DeclarativeConfigurationCore.AnyConfigurationContainer<Base>
+}
+public protocol CallAsFunctionConfigurableProtocol : DeclarativeConfiguration._BaseConfigurableProtocol {
+}
+extension DeclarativeConfiguration.CallAsFunctionConfigurableProtocol {
+  @discardableResult
+  @inlinable public func callAsFunction(config configuration: (Self.Config) -> Self.Config) -> Self {
+		configuration(.empty).configured(self)
+	}
+}
+public protocol CustomConfigurableProtocol : DeclarativeConfiguration._BaseConfigurableProtocol {
+}
+extension DeclarativeConfiguration.CustomConfigurableProtocol {
+  @inlinable public func configured(using configuration: (Self.Config) -> Self.Config) -> Self {
+		configured(using: configuration(.empty))
+	}
+  @inlinable public func configured(using configurator: Self.Config) -> Self {
+		configurator.configured(self)
+	}
+  @inlinable public mutating func configure(using configuration: (Self.Config) -> Self.Config) {
+		self = configured(using: configuration(.empty))
+	}
+  @inlinable public mutating func configure(using configurator: Self.Config) {
+		self = configured(using: configurator)
+	}
+}
+extension DeclarativeConfiguration.CustomConfigurableProtocol where Self : AnyObject {
+  @inlinable public func configure(using configuration: (Self.Config) -> Self.Config) {
+		configure(using: configuration(.empty))
+	}
+  @inlinable public func configure(using configurator: Self.Config) {
+		configurator.configure(self)
+	}
+}
+public protocol _BaseConfigurableProtocol {
+}
+extension DeclarativeConfiguration._BaseConfigurableProtocol {
+  public typealias Config = DeclarativeConfiguration.Configurator<Self>
+}
+extension DeclarativeConfiguration.Builder {
+  @available(*, deprecated, message: "Use `.combined(with: builder.configurator)` instead.\nThis API will be removed in v1.0.0.")
+  @inlinable public func combined(with builder: DeclarativeConfiguration.Builder<Base>) -> DeclarativeConfiguration.Builder<Base> {
+		combined(with: builder.configurator)
+	}
+  @available(*, deprecated, renamed: "modify", message: "This API will be removed in v1.0.0.")
+  @inlinable public func set(_ transform: @escaping (inout Base) -> Swift.Void) -> DeclarativeConfiguration.Builder<Base> {
+		modify(transform)
+	}
+  @available(*, deprecated, message: "Use `modify` and capture arguments explicitly instead.\nThis API is likely to be removed in v1.0.0")
+  @inlinable public func reinforce<each Arg>(_ args: repeat each Arg, transform: @escaping (inout Base, repeat each Arg) -> Swift.Void) -> DeclarativeConfiguration.Builder<Base> {
+		commit().modify { transform(&$0, repeat each args) }
+	}
+}
+extension DeclarativeConfiguration.Configurator {
+  @available(*, deprecated, renamed: "modify", message: "This API will be removed in v1.0.0.")
+  @inlinable public func set(_ transform: @escaping (inout Base) -> Swift.Void) -> DeclarativeConfiguration.Configurator<Base> {
+		modify(transform)
+	}
+  @available(*, deprecated, renamed: "transform", message: "This API will be removed in v1.0.0.")
+  @inlinable public func appendingConfiguration(_ configuration: @escaping (Base) -> Base) -> DeclarativeConfiguration.Configurator<Base> {
+		modify { $0 = configuration($0) }
+	}
+}
+extension ObjectiveC.NSObject : DeclarativeConfiguration.CustomConfigurableProtocol {}
+extension ObjectiveC.NSObject : DeclarativeConfiguration.CallAsFunctionConfigurableProtocol {}
