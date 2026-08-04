@@ -1,0 +1,253 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -swift-version 6 -O -module-name DeclarativeConfigurationCore -package-name swift_declarative_configuration
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.3
+import Foundation
+import IssueReporting
+import KeyPathsExtensions
+import Swift
+import SwiftMarkerProtocols
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public enum ConfigurationBlocks<Container> where Container : DeclarativeConfigurationCore.ConfigurationContainer {
+  @dynamicMemberLookup public struct Callable<Value> {
+    public typealias Blocks = DeclarativeConfigurationCore.ConfigurationBlocks<Container>
+    public typealias ScopedContainer<LocalValue> = DeclarativeConfigurationCore.AnyConfigurationContainer<LocalValue>
+    @usableFromInline
+    internal var container: Container
+    @usableFromInline
+    internal var keyPath: Swift.WritableKeyPath<Container.Base, Value>
+    @usableFromInline
+    internal init(container: Container, keyPath: Swift.WritableKeyPath<Container.Base, Value>)
+    public func peek(_ operation: @escaping (Value) -> Swift.Void) -> Container
+    public func transform(_ transform: @escaping (Value) -> Value) -> Container
+    public func modify(_ transform: @escaping (inout Value) -> Swift.Void) -> Container
+    public func callAsFunction(_ value: Value) -> Container
+    public func scope(_ config: (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Value>.ScopedContainer<Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Value>.ScopedContainer<Value>) -> Container
+    public func configure(using config: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Value>.ScopedContainer<Value>) -> Container
+    @available(*, deprecated, message: "Use `.ifLet.scope` instead.")
+    public func ifLetScope<Wrapped>(_ config: @escaping (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Value>.ScopedContainer<Wrapped>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Value>.ScopedContainer<Wrapped>) -> Container where Value == Wrapped?
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.WritableKeyPath<Value, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<LocalValue> {
+      get {
+			Callable<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.KeyPath<Value, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<LocalValue> {
+      get {
+			NonCallable<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+  }
+  @dynamicMemberLookup public struct CallableIfLet<Wrapped> {
+    public typealias Value = Wrapped?
+    public typealias Blocks = DeclarativeConfigurationCore.ConfigurationBlocks<Container>
+    public typealias ScopedContainer<LocalValue> = DeclarativeConfigurationCore.AnyConfigurationContainer<LocalValue>
+    @usableFromInline
+    internal var container: Container
+    @usableFromInline
+    internal var keyPath: Swift.WritableKeyPath<Container.Base, DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.Value>
+    @usableFromInline
+    internal init(container: Container, keyPath: Swift.WritableKeyPath<Container.Base, DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.Value>)
+    public func peek(_ operation: @escaping (Wrapped) -> Swift.Void) -> Container
+    public func transform(_ transform: @escaping (Wrapped) -> Wrapped) -> Container
+    public func modify(_ transform: @escaping (inout Wrapped) -> Swift.Void) -> Container
+    public func callAsFunction(_ newValue: Wrapped) -> Container
+    public func callAsFunction(else defaultValue: Wrapped) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<Wrapped>
+    public func scope(_ config: @escaping (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> Container
+    public func configure(using config: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> Container
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.WritableKeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<LocalValue> {
+      get {
+			CallableIfLet<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.KeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<LocalValue> {
+      get {
+			NonCallableIfLet<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+  }
+  @dynamicMemberLookup public struct NonCallable<Value> {
+    public typealias Blocks = DeclarativeConfigurationCore.ConfigurationBlocks<Container>
+    public typealias ScopedContainer<LocalValue> = DeclarativeConfigurationCore.AnyConfigurationContainer<LocalValue>
+    @usableFromInline
+    internal var container: Container
+    @usableFromInline
+    internal var keyPath: Swift.KeyPath<Container.Base, Value>
+    @usableFromInline
+    internal init(container: Container, keyPath: Swift.KeyPath<Container.Base, Value>)
+    public func peek(_ operation: @escaping (Value) -> Swift.Void) -> Container
+    public func scope(_ config: (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Value>.ScopedContainer<Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Value>.ScopedContainer<Value>) -> Container
+    public func configure(using config: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Value>.ScopedContainer<Value>) -> Container
+    @available(*, deprecated, message: "Use `.ifLet.scope` instead.")
+    public func ifLetScope<Wrapped>(_ config: @escaping (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Value>.ScopedContainer<Wrapped>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Value>.ScopedContainer<Wrapped>) -> Container where Value == Wrapped?
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.ReferenceWritableKeyPath<Value, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<LocalValue> {
+      get {
+			Callable<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.KeyPath<Value, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<LocalValue> {
+      get {
+			NonCallable<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<Wrapped, LocalValue>(dynamicMember keyPath: Swift.ReferenceWritableKeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.Callable<LocalValue?> where Value == Wrapped? {
+      get {
+			Callable<LocalValue?>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<Wrapped, LocalValue>(dynamicMember keyPath: Swift.KeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<LocalValue?> where Value == Wrapped? {
+      get {
+			NonCallable<LocalValue?>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+  }
+  @dynamicMemberLookup public struct NonCallableIfLet<Wrapped> {
+    public typealias Value = Wrapped?
+    public typealias Blocks = DeclarativeConfigurationCore.ConfigurationBlocks<Container>
+    public typealias ScopedContainer<LocalValue> = DeclarativeConfigurationCore.AnyConfigurationContainer<LocalValue>
+    @usableFromInline
+    internal var container: Container
+    @usableFromInline
+    internal var keyPath: Swift.KeyPath<Container.Base, DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.Value>
+    @usableFromInline
+    internal init(container: Container, keyPath: Swift.KeyPath<Container.Base, DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.Value>)
+    public func peek(_ operation: @escaping (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.Value) -> Swift.Void) -> Container
+    @available(*, unavailable, message: "Not available for non-writable key path")
+    public func callAsFunction(else defaultValue: Wrapped) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallable<Wrapped>
+    public func scope(_ config: @escaping (DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> Container
+    public func configured(using config: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>.ScopedContainer<Wrapped>) -> Container
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.ReferenceWritableKeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<LocalValue> {
+      get {
+			CallableIfLet<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+    @inlinable public subscript<LocalValue>(dynamicMember keyPath: Swift.KeyPath<Wrapped, LocalValue>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<LocalValue> {
+      get {
+			NonCallableIfLet<LocalValue>(
+				container: self.container,
+				keyPath: self.keyPath.appending(path: keyPath)
+			)
+		}
+    }
+  }
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.Callable where Value : SwiftMarkerProtocols._OptionalProtocol {
+  public var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Value.Wrapped> {
+    get
+  }
+  public func ifNil(_ value: Value) -> Container
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.NonCallable where Value : SwiftMarkerProtocols._OptionalProtocol {
+  public var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Value.Wrapped> {
+    get
+  }
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.CallableIfLet where Wrapped : SwiftMarkerProtocols._OptionalProtocol {
+  public var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped.Wrapped> {
+    get
+  }
+  public func ifNil(_ value: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.Value) -> Container
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.NonCallableIfLet where Wrapped : SwiftMarkerProtocols._OptionalProtocol {
+  public var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped.Wrapped> {
+    get
+  }
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.Callable {
+  public func ifLet<Wrapped>(_ keyPath: Swift.WritableKeyPath<Value, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>
+  public func ifLet<Wrapped>(_ keyPath: Swift.KeyPath<Value, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.NonCallable {
+  public func ifLet<Wrapped>(_ keyPath: Swift.ReferenceWritableKeyPath<Value, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>
+  public func ifLet<Wrapped>(_ keyPath: Swift.KeyPath<Value, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<Wrapped>
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.CallableIfLet {
+  public func ifLet<LocalWrapped>(_ keyPath: Swift.WritableKeyPath<Wrapped, LocalWrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<LocalWrapped>
+  public func ifLet<LocalWrapped>(_ keyPath: Swift.KeyPath<Wrapped, LocalWrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<LocalWrapped>
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.NonCallableIfLet {
+  public func ifLet<LocalWrapped>(_ keyPath: Swift.ReferenceWritableKeyPath<Wrapped, LocalWrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<LocalWrapped>
+  public func ifLet<LocalWrapped>(_ keyPath: Swift.KeyPath<Wrapped, LocalWrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Container>.NonCallableIfLet<LocalWrapped>
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.Callable {
+  public func callAsFunction(ifLet newValue: Value?) -> Container
+}
+extension DeclarativeConfigurationCore.ConfigurationBlocks.CallableIfLet {
+  public func callAsFunction(ifLet newValue: DeclarativeConfigurationCore.ConfigurationBlocks<Container>.CallableIfLet<Wrapped>.Value?) -> Container
+}
+public protocol ConfigurationContainer<Base> {
+  associatedtype Base
+}
+extension DeclarativeConfigurationCore.ConfigurationContainer {
+  public typealias Blocks = DeclarativeConfigurationCore.ConfigurationBlocks<Self>
+}
+extension DeclarativeConfigurationCore.ConfigurationContainer where Self.Base : SwiftMarkerProtocols._OptionalProtocol {
+  public var ifLet: DeclarativeConfigurationCore.ConfigurationBlocks<Self>.CallableIfLet<Self.Base.Wrapped> {
+    get
+  }
+  public func ifNil(_ newValue: Self.Base) -> Self
+}
+extension DeclarativeConfigurationCore.ConfigurationContainer {
+  public func ifLet<Wrapped>(_ keyPath: Swift.WritableKeyPath<Self.Base, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.CallableIfLet<Wrapped>
+  public func ifLet<Wrapped>(_ keyPath: Swift.KeyPath<Self.Base, Wrapped?>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.NonCallableIfLet<Wrapped>
+  @inlinable public subscript<Value>(dynamicMember keyPath: Swift.WritableKeyPath<Self.Base, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.Callable<Value> {
+    get {
+		.init(container: self, keyPath: keyPath)
+	}
+  }
+  @inlinable public subscript<Value>(dynamicMember keyPath: Swift.KeyPath<Self.Base, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.NonCallable<Value> {
+    get {
+		.init(container: self, keyPath: keyPath)
+	}
+  }
+  public subscript<Wrapped, Value>(dynamicMember keyPath: Swift.WritableKeyPath<Wrapped, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.Callable<Value?> where Self.Base == Wrapped? {
+    get
+  }
+  public subscript<Wrapped, Value>(dynamicMember keyPath: Swift.KeyPath<Wrapped, Value>) -> DeclarativeConfigurationCore.ConfigurationBlocks<Self>.NonCallable<Value?> where Self.Base == Wrapped? {
+    get
+  }
+}
+@dynamicMemberLookup public struct AnyConfigurationContainer<Base> : DeclarativeConfigurationCore.ConfigurationContainer {
+  internal let underlyingContainer: any DeclarativeConfigurationCore.ConfigurationContainer<Base>
+  public init(_ underlyingContainer: any DeclarativeConfigurationCore.ConfigurationContainer<Base>)
+}
+public protocol ConfigurationStorage<Base> {
+  associatedtype Base
+}
+public struct DefaultConfigurationStorage<Base> : DeclarativeConfigurationCore.ConfigurationStorage {
+  internal var items: [any DeclarativeConfigurationCore._ConfigurationItem]
+  public init()
+}
+@inlinable public func reduce<Value>(_ value: Value, with transform: (inout Value) -> Swift.Void) -> Value {
+	var _value = value
+	transform(&_value)
+	return _value
+}
