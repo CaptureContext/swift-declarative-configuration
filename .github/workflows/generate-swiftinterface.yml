@@ -29,7 +29,7 @@ permissions:
 jobs:
   generate:
     name: Generate ${{ inputs.platform }}
-    runs-on: ${{ (inputs.platform == 'linux' || inputs.platform == 'wasi') && 'ubuntu-latest' || inputs.platform == 'windows' && 'windows-latest' || 'macos-latest' }}
+    runs-on: ${{ (inputs.platform == 'linux' || inputs.platform == 'wasi') && 'ubuntu-latest' || inputs.platform == 'windows' && 'windows-latest' || 'self-hosted' }}
     env:
       GH_TOKEN: ${{ github.token }}
       INPUT_TARGET_BRANCH: ${{ inputs.target_branch }}
