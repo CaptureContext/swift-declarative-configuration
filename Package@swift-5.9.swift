@@ -50,8 +50,8 @@ let package = Package(
 			.upToNextMinor(from: "0.2.0")
 		),
 		.package(
-			url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git",
-			.upToNextMajor(from: "1.8.0")
+			url: "https://github.com/pointfreeco/swift-issue-reporting.git",
+			.upToNextMajor(from: "2.0.0")
 		),
 	],
 	targets: [
@@ -72,7 +72,7 @@ let package = Package(
 				),
 				.product(
 					name: "IssueReporting",
-					package: "xctest-dynamic-overlay"
+					package: "swift-issue-reporting"
 				),
 			]
 		),
