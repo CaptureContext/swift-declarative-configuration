@@ -35,3 +35,25 @@ jobs:
         action: xcodebuild-test
         platform: ${{ matrix.platform }}
         scheme: swift-declarative-configuration-Package
+
+  xcodebuild-swift5:
+    name: xcodebuild-swift5
+    if: |
+      !contains(github.event.head_commit.message, '[ci skip]') &&
+      !contains(github.event.head_commit.message, '[ci skip test]')
+    runs-on: macos-14
+    strategy:
+      matrix:
+        platform: [iOS, macOS, macCatalyst, tvOS, watchOS]
+        xcode: ['15.4']
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v6
+    - name: Test
+      uses: capturecontext/swift-package-action/build@3.0-beta.13
+      with:
+        xcode: ${{ matrix.xcode }}
+        cache-derived-data: true
+        action: xcodebuild
+        platform: ${{ matrix.platform }}
+        scheme: swift-declarative-configuration-Package
