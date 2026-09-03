@@ -21,7 +21,7 @@ jobs:
     outputs:
       update_branch: ${{ steps.branch.outputs.update_branch }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
@@ -65,7 +65,7 @@ jobs:
       TARGET_BRANCH: ${{ github.ref_name }}
       UPDATE_BRANCH: ${{ needs.prepare.outputs.update_branch }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
