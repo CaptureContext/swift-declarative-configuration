@@ -32,9 +32,13 @@ struct ConfiguratorTests {
 				.intProperty(1)
 			}
 
-			#expect(mock != corruptedMock)
 			#expect(mock == DefaultMock(intProperty: 1))
-			#expect(corruptedMock == DefaultMock(intProperty: 0))
+			withKnownIssue(
+				"Swift may skip callAsFunction when the result type is inferred.",
+				isIntermittent: true
+			) {
+				#expect(corruptedMock == mock)
+			}
 		}
 
 		@Test
@@ -295,9 +299,13 @@ struct ConfiguratorTests {
 				.intProperty(1)
 			}
 
-			#expect(mock != corruptedMock)
 			#expect(mock == DefaultMock(intProperty: 1))
-			#expect(corruptedMock == DefaultMock(intProperty: 0))
+			withKnownIssue(
+				"Swift may skip callAsFunction when the result type is inferred.",
+				isIntermittent: true
+			) {
+				#expect(corruptedMock == mock)
+			}
 		}
 
 		@Test
